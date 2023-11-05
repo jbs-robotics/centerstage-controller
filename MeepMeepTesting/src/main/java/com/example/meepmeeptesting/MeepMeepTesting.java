@@ -18,6 +18,7 @@ public class MeepMeepTesting {
         RoadRunnerBotEntity leftBot = new DefaultBotBuilder(meepMeep)
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
                 .setConstraints(90, 90, Math.toRadians(180), Math.toRadians(180), 15)
+                //left
                 .followTrajectorySequence(drive ->
                         drive.trajectorySequenceBuilder(new Pose2d(60, 10, Math.toRadians(180)))
                                 .lineToSplineHeading(new Pose2d(35, 10, Math.toRadians(-90)))
@@ -28,6 +29,7 @@ public class MeepMeepTesting {
                 );
         RoadRunnerBotEntity centerBot = new DefaultBotBuilder(meepMeep)
                 .setConstraints(90, 90, Math.toRadians(180), Math.toRadians(180), 15)
+                //center
                 .followTrajectorySequence(drive -> drive.trajectorySequenceBuilder(new Pose2d(60, 10, Math.toRadians(180)))
                         .forward(27)
                         //place pixel
@@ -37,6 +39,7 @@ public class MeepMeepTesting {
                 );
         RoadRunnerBotEntity rightBot = new DefaultBotBuilder(meepMeep)
                 .setConstraints(90, 90, Math.toRadians(180), Math.toRadians(180), 15)
+                //right
                 .followTrajectorySequence(drive -> drive.trajectorySequenceBuilder(new Pose2d(60, 10, Math.toRadians(180)))
                         .strafeRight(25)
                         .lineToSplineHeading(new Pose2d(30, 32, Math.toRadians(-90)))
