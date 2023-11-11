@@ -22,7 +22,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import java.util.List;
 
-@Autonomous(name = "Autonomous Red Top")
+@Autonomous(name = "NO")
 public class AutonomousOpModeRedTop extends LinearOpMode {
 //    private static final boolean USE_WEBCAM = false;
 //    private TfodProcessor tfod;

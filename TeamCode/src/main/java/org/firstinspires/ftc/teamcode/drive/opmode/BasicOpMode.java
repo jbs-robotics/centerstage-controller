@@ -60,7 +60,7 @@ public class BasicOpMode extends LinearOpMode {
     private boolean intaking = false;
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor leftFront, leftBack, rightFront, rightBack, lift = null;
-    private Servo leftServo, rightServo = null;
+    private Servo intakeServo = null;
 
     @Override
     public void runOpMode() {
@@ -74,8 +74,8 @@ public class BasicOpMode extends LinearOpMode {
         rightFront = hardwareMap.get(DcMotor.class, "rightFront");
         leftBack = hardwareMap.get(DcMotor.class, "leftBack");
         rightBack = hardwareMap.get(DcMotor.class, "rightBack");
-//        lift = hardwareMap.get(DcMotor.class, "lift");
-//        leftServo = hardwareMap.get(Servo.class, "leftServo");
+        lift = hardwareMap.get(DcMotor.class, "lift");
+//        intakeServo = hardwareMap.get(Servo.class, "intakeServo");
 //        rightServo = hardwareMap.get(Servo.class, "rightServo");
 
 
@@ -87,7 +87,7 @@ public class BasicOpMode extends LinearOpMode {
         rightFront.setDirection(DcMotor.Direction.FORWARD);
         leftBack.setDirection(DcMotor.Direction.REVERSE);
         rightBack.setDirection(DcMotor.Direction.FORWARD);
-//        lift.setDirection(DcMotor.Direction.REVERSE);
+        lift.setDirection(DcMotor.Direction.FORWARD);
 //        leftServo.setDirection(Servo.Direction.FORWARD);
 //        rightServo.setDirection(Servo.Direction.REVERSE);
 
@@ -115,7 +115,7 @@ public class BasicOpMode extends LinearOpMode {
             double rfPower = Range.clip(drive - turn - strafe, -1.0, 1.0) ;
             double lbPower = Range.clip(drive + turn - strafe, -1.0, 1.0);
             double rbPower = Range.clip(drive - turn + strafe, -1.0, 1.0) ;
-            double liftPower = Range.clip(liftControl, -1.0, 1.0);
+            double liftPower = Range.clip(liftControl, -0.5, 0.5);
 
             // Send calculated power to wheels
             leftFront.setPower(lfPower);
@@ -123,15 +123,18 @@ public class BasicOpMode extends LinearOpMode {
             rightFront.setPower(rfPower);
             rightBack.setPower(rbPower);
 //
-//            //send power to lift
-//            lift.setPower(liftPower);
-//            if(!intaking && intake){
+            //send power to lift
+            lift.setPower(liftPower);
+            if(!intaking && intake){
+                lift.setPower(1);
+                sleep(200);
+
 //                //toggle going in
 //                intaking = true;
 //                leftServo.setPosition(1);
 //                rightServo.setPosition(1);
 //
-//            }
+            }
 //            else if (intaking && intake){
 //                //toggle going out
 //                intaking = false;
@@ -140,8 +143,8 @@ public class BasicOpMode extends LinearOpMode {
 //            }
 
             // Show the elapsed game time and wheel power.
-            telemetry.addData("Status", "Run Time: " + runtime.toString());
-            telemetry.addData("Motors", "left front(%.2f), right front(%.2f), left back(%.2f), right back(%.2f)", lfPower, rfPower, lbPower, rbPower);
+            telemetry.addData("Status", "Run Time Test: " + runtime.toString());
+            telemetry.addData("Motors", "left front(%.2f), right front(%.2f), left back(%.2f), right back(%.2f), lift(%.2f)", lfPower, rfPower, lbPower, rbPower, liftPower);
             telemetry.update();
         }
     }

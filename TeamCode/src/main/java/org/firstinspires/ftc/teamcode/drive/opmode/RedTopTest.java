@@ -5,18 +5,24 @@ import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
 /*
  * This is an example of a more complex path to really test the tuning.
  */
-@Autonomous(group = "drive", name="TEST")
+@Autonomous(group = "drive", name="Red Top")
 public class RedTopTest extends LinearOpMode {
+    private DcMotor lift = null;
+//    private Servo intakeServo = null;
     @Override
     public void runOpMode() throws InterruptedException {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
-        int TFODPrediction = 0;
+        lift = hardwareMap.get(DcMotor.class, "lift");
+//        intakeServo = hardwareMap.get(Servo.class, "intakeServo");
+        int TFODPrediction = 2;
         waitForStart();
 
         if (isStopRequested()) return;
@@ -29,10 +35,12 @@ public class RedTopTest extends LinearOpMode {
                 drive.followTrajectory(left1);
                 //place prop on spike mark
                 Trajectory left2 = drive.trajectoryBuilder(left1.end())
-                        .lineToLinearHeading(new Pose2d(new Vector2d(28, 50), Math.toRadians(180)))
+                        .lineToLinearHeading(new Pose2d(new Vector2d(28, 50), Math.toRadians(100.5)))
                         .build();
                 drive.followTrajectory(left2);
+                drive.turn(Math.toRadians(-22));
                 //place pixel on canvas
+                //TODO: figure out how much time is needed to lift the lift all the way up
                 break;
             case 1: //center
                 Trajectory center1 = drive.trajectoryBuilder(new Pose2d(60, 10, Math.toRadians(180)))
@@ -55,11 +63,13 @@ public class RedTopTest extends LinearOpMode {
                         .build();
                 drive.followTrajectory(right1);
                 drive.followTrajectory(right2);
+                drive.turn(Math.toRadians(10));
                 //place prop on spike mark
                 Trajectory right3 = drive.trajectoryBuilder(right2.end())
                         .lineToSplineHeading(new Pose2d(42, 50, Math.toRadians(90)))
                         .build();
                 drive.followTrajectory(right3);
+                drive.turn(Math.toRadians(30));
                 //place pixel on canvas
                 break;
             default:
