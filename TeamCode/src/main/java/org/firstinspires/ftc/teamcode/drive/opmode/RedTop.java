@@ -6,15 +6,14 @@ import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.Range;
+
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
 /*
  * This is an example of a more complex path to really test the tuning.
  */
 @Autonomous(group = "drive", name="Red Top")
-public class RedTopTest extends LinearOpMode {
+public class RedTop extends LinearOpMode {
     private DcMotor lift = null;
 //    private Servo intakeServo = null;
     @Override
