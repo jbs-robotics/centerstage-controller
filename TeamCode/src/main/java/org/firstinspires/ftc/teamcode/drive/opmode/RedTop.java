@@ -6,7 +6,8 @@ import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-
+import org.firstinspires.ftc.vision.VisionPortal;
+import org.firstinspires.ftc.vision.tfod.TfodProcessor;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
 /*
@@ -15,6 +16,8 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 @Autonomous(group = "drive", name="Red Top")
 public class RedTop extends LinearOpMode {
     private DcMotor lift = null;
+    TfodProcessor tfod;
+    private VisionPortal visionPortal;
 //    private Servo intakeServo = null;
     @Override
     public void runOpMode() throws InterruptedException {
