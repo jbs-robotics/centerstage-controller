@@ -11,17 +11,17 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
+import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.tfod.TfodProcessor;
-import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
 import java.util.List;
 
 /*
  * This is an example of a more complex path to really test the tuning.
  */
-@Autonomous(group = "drive", name="Red Top")
-public class RedTop extends LinearOpMode {
+@Autonomous(group = "drive", name="Blue Bottom")
+public class BlueBottom extends LinearOpMode {
     private DcMotor lift = null;
     private Servo intake = null;
     boolean USE_WEBCAM = true;
@@ -52,47 +52,49 @@ public class RedTop extends LinearOpMode {
         drive.setPoseEstimate(new Pose2d(new Vector2d(60, 10), Math.toRadians(180)));
         switch(TFODPrediction){
             case "l": //left
-                Trajectory left1 = drive.trajectoryBuilder(new Pose2d(60, 10, Math.toRadians(180)))
-                        .lineToLinearHeading(new Pose2d(new Vector2d(35, 10), Math.toRadians(-80)))
+                Trajectory left1 = drive.trajectoryBuilder(new Pose2d(-60, -37, Math.toRadians(180)))
+                        .lineToSplineHeading(new Pose2d(-35, -37, Math.toRadians(90)))
                         .build();
                 drive.followTrajectory(left1);
                 //place prop on spike mark
                 Trajectory left2 = drive.trajectoryBuilder(left1.end())
-                        .lineToLinearHeading(new Pose2d(new Vector2d(28, 50), Math.toRadians(100.5)))
+                        .splineToConstantHeading(new Vector2d(-60, -37), Math.toRadians(360))
+                        .splineToConstantHeading(new Vector2d(-55, -12), Math.toRadians(0))
+                        .splineToConstantHeading(new Vector2d(-48, -12), Math.toRadians(0))
+                        .splineToConstantHeading(new Vector2d(-42, 50), Math.toRadians(90))
                         .build();
                 drive.followTrajectory(left2);
-                drive.turn(Math.toRadians(-22));
                 //place pixel on canvas
                 //TODO: figure out how much time is needed to lift the lift all the way up
                 break;
             case "c": //center
-                Trajectory center1 = drive.trajectoryBuilder(new Pose2d(60, 10, Math.toRadians(180)))
+                Trajectory center1 = drive.trajectoryBuilder(new Pose2d(-60, -37, Math.toRadians(180)))
                         .forward(27)
                         .build();
                 drive.followTrajectory(center1);
-                //place prop on spike mark
+                //place pixel on spike mark
                 Trajectory center2 = drive.trajectoryBuilder(center1.end())
-                        .lineToLinearHeading(new Pose2d(35.5, 50, Math.toRadians(90)))
+                        .splineToSplineHeading(new Pose2d(-60, -37, Math.toRadians(90)), Math.toRadians(360))
+                        .splineToConstantHeading(new Vector2d(-55, -12), Math.toRadians(0))
+                        .splineToConstantHeading(new Vector2d(-48, -12), Math.toRadians(0))
+                        .splineToConstantHeading(new Vector2d(-35.5, 50), Math.toRadians(90))
                         .build();
                 drive.followTrajectory(center2);
                 //place pixel on canvas
                 break;
             case "r": //right
-                Trajectory right1 = drive.trajectoryBuilder(new Pose2d(60, 10, Math.toRadians(180)))
-                        .strafeRight(27)
+                Trajectory right1 = drive.trajectoryBuilder(new Pose2d(-60, -37, Math.toRadians(0)))
+                        .lineToSplineHeading(new Pose2d(-35, -37, Math.toRadians(-90)))
                         .build();
                 Trajectory right2 = drive.trajectoryBuilder(right1.end())
-                        .lineToSplineHeading(new Pose2d(30, 32, Math.toRadians(-90)))
+                        .splineToSplineHeading(new Pose2d(-60, -37, Math.toRadians(90)), Math.toRadians(0))
+                        .splineToConstantHeading(new Vector2d(-55, -12), Math.toRadians(0))
+                        .splineToConstantHeading(new Vector2d(-48, -12), Math.toRadians(0))
+                        .splineToConstantHeading(new Vector2d(-28, 50), Math.toRadians(90))
                         .build();
                 drive.followTrajectory(right1);
+                //place pixel on spike mark
                 drive.followTrajectory(right2);
-                drive.turn(Math.toRadians(10));
-                //place prop on spike mark
-                Trajectory right3 = drive.trajectoryBuilder(right2.end())
-                        .lineToSplineHeading(new Pose2d(42, 50, Math.toRadians(90)))
-                        .build();
-                drive.followTrajectory(right3);
-                drive.turn(Math.toRadians(30));
                 //place pixel on canvas
                 break;
             default:
