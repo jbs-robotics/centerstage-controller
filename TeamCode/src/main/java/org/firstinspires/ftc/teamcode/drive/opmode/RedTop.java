@@ -6,6 +6,7 @@ import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
@@ -24,6 +25,8 @@ import java.util.List;
 public class RedTop extends LinearOpMode {
     private DcMotor lift = null;
     private Servo intake = null;
+    private int liftDelay = 1500;
+
     boolean USE_WEBCAM = true;
     TfodProcessor tfod;
     private VisionPortal visionPortal;
@@ -31,26 +34,22 @@ public class RedTop extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
-        intake = hardwareMap.get(Servo.class, "intake");
-//        Servo rightServo = hardwareMap.get(Servo.class, "rightServo");
-
-        lift.setDirection(DcMotor.Direction.FORWARD);
-        intake.setDirection(Servo.Direction.FORWARD);
-        //        rightServo.setDirection(Servo.Direction.FORWARD);
-
-//        drive.setPoseEstimate(new Pose2d(60, 10, Math.toRadians(180)));
-        initTfod();
+//        //intake = hardwareMap.get(Servo.class, "intake");
+//        //intake.setDirection(Servo.Direction.FORWARD);
+//        initTfod();
         lift = hardwareMap.get(DcMotor.class, "lift");
+        lift.setDirection(DcMotor.Direction.REVERSE);
 //        intakeServo = hardwareMap.get(Servo.class, "intakeServo");
-//        int TFODPrediction = 2;
         waitForStart();
-        telemetryTfod();
-        telemetry.update();
-        List<Recognition> currentRecognitions = tfod.getRecognitions();
-        String TFODPrediction = currentRecognitions.get(0).getLabel();
+//        telemetryTfod();
+//        telemetry.update();
+//        List<Recognition> currentRecognitions = tfod.getRecognitions();
+//        String TFODPrediction = currentRecognitions.get(0).getLabel();
+        String TFODPrediction = "l";
         if (isStopRequested()) return;
         drive.setPoseEstimate(new Pose2d(new Vector2d(60, 10), Math.toRadians(180)));
-        switch(TFODPrediction){
+
+        switch(TFODPrediction) {
             case "l": //left
                 Trajectory left1 = drive.trajectoryBuilder(new Pose2d(60, 10, Math.toRadians(180)))
                         .lineToLinearHeading(new Pose2d(new Vector2d(35, 10), Math.toRadians(-80)))
@@ -63,7 +62,10 @@ public class RedTop extends LinearOpMode {
                 drive.followTrajectory(left2);
                 drive.turn(Math.toRadians(-22));
                 //place pixel on canvas
-                //TODO: figure out how much time is needed to lift the lift all the way up
+                lift.setPower(1);
+                sleep(liftDelay);
+                lift.setPower(0);
+
                 break;
             case "c": //center
                 Trajectory center1 = drive.trajectoryBuilder(new Pose2d(60, 10, Math.toRadians(180)))
@@ -76,6 +78,9 @@ public class RedTop extends LinearOpMode {
                         .build();
                 drive.followTrajectory(center2);
                 //place pixel on canvas
+                lift.setPower(1);
+                sleep(liftDelay);
+                lift.setPower(0);
                 break;
             case "r": //right
                 Trajectory right1 = drive.trajectoryBuilder(new Pose2d(60, 10, Math.toRadians(180)))
@@ -94,19 +99,14 @@ public class RedTop extends LinearOpMode {
                 drive.followTrajectory(right3);
                 drive.turn(Math.toRadians(30));
                 //place pixel on canvas
+                lift.setPower(1);
+                sleep(liftDelay);
+                lift.setPower(0);
                 break;
             default:
                 telemetry.addData("wtf how", "no but actually how");
                 break;
         }
-
-//        sleep(2000);
-
-//        drive.followTrajectory(
-//                drive.trajectoryBuilder(traj.end(), true)
-//                        .splineTo(new Vector2d(0, 0), Math.toRadians(180))
-//                        .build()
-//        );
     }
     private void initTfod() {
         tfod = tfod.easyCreateWithDefaults();

@@ -88,15 +88,15 @@ public class BasicOpMode extends LinearOpMode {
         leftBack.setDirection(DcMotor.Direction.REVERSE);
         rightBack.setDirection(DcMotor.Direction.FORWARD);
         lift.setDirection(DcMotor.Direction.FORWARD);
-//        leftServo.setDirection(Servo.Direction.FORWARD);
-//        rightServo.setDirection(Servo.Direction.REVERSE);
-
+        lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        lift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         runtime.reset();
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
+            int position = lift.getCurrentPosition();
 
 
             // Choose to drive using either Tank Mode, or POV Mode
@@ -110,7 +110,7 @@ public class BasicOpMode extends LinearOpMode {
 
             double liftControl = gamepad2.left_stick_y;
             boolean intake = gamepad2.a;
-
+            boolean test = gamepad2.b;
             double lfPower = Range.clip(drive + turn + strafe, -1.0, 1.0) ;
             double rfPower = Range.clip(drive - turn - strafe, -1.0, 1.0) ;
             double lbPower = Range.clip(drive + turn - strafe, -1.0, 1.0);
@@ -124,27 +124,21 @@ public class BasicOpMode extends LinearOpMode {
             rightBack.setPower(rbPower);
 //
             //send power to lift
-            lift.setPower(liftPower);
-            if(!intaking && intake){
-                lift.setPower(1);
-                sleep(200);
-
-//                //toggle going in
-//                intaking = true;
-//                leftServo.setPosition(1);
-//                rightServo.setPosition(1);
-//
+            if(lift.getCurrentPosition() <= 5*537){
+                lift.setPower(liftPower);
             }
-//            else if (intaking && intake){
-//                //toggle going out
-//                intaking = false;
-//                leftServo.setPosition(0);
-//                rightServo.setPosition(0);
-//            }
+            else{
+                lift.setPower(0);
+            }
+            if(test){
+                lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                lift.setTargetPosition(2000);
+            }
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time Test: " + runtime.toString());
             telemetry.addData("Motors", "left front(%.2f), right front(%.2f), left back(%.2f), right back(%.2f), lift(%.2f)", lfPower, rfPower, lbPower, rbPower, liftPower);
+            telemetry.addData("Motor Encoder", "enocder value(%d)", position);
             telemetry.update();
         }
     }
