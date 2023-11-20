@@ -45,22 +45,31 @@ public class RedTop extends LinearOpMode {
 //        telemetry.update();
 //        List<Recognition> currentRecognitions = tfod.getRecognitions();
 //        String TFODPrediction = currentRecognitions.get(0).getLabel();
-        String TFODPrediction = "l";
+        String TFODPrediction = "c";
         if (isStopRequested()) return;
         drive.setPoseEstimate(new Pose2d(new Vector2d(60, 10), Math.toRadians(180)));
 
         switch(TFODPrediction) {
             case "l": //left
                 Trajectory left1 = drive.trajectoryBuilder(new Pose2d(60, 10, Math.toRadians(180)))
-                        .lineToLinearHeading(new Pose2d(new Vector2d(35, 10), Math.toRadians(-80)))
+                        .lineToLinearHeading(new Pose2d(new Vector2d(25, 5), Math.toRadians(-80)))
                         .build();
                 drive.followTrajectory(left1);
+                Trajectory forwardOffset = drive.trajectoryBuilder(left1.end())
+                        .forward(5)
+                        .build();
+                drive.followTrajectory(forwardOffset);
                 //place prop on spike mark
-                Trajectory left2 = drive.trajectoryBuilder(left1.end())
-                        .lineToLinearHeading(new Pose2d(new Vector2d(28, 50), Math.toRadians(100.5)))
+                Trajectory left2 = drive.trajectoryBuilder(forwardOffset.end())
+                        .lineToLinearHeading(new Pose2d(new Vector2d(18, 50), Math.toRadians(100.5)))
                         .build();
                 drive.followTrajectory(left2);
-                drive.turn(Math.toRadians(-22));
+                Trajectory offset2 = drive.trajectoryBuilder(left2.end())
+                        .forward(10)
+                        .build();
+
+                drive.turn(Math.toRadians(-30));
+                drive.followTrajectory(offset2);
                 //place pixel on canvas
                 lift.setPower(1);
                 sleep(liftDelay);
@@ -69,7 +78,7 @@ public class RedTop extends LinearOpMode {
                 break;
             case "c": //center
                 Trajectory center1 = drive.trajectoryBuilder(new Pose2d(60, 10, Math.toRadians(180)))
-                        .forward(27)
+                        .forward(23)
                         .build();
                 drive.followTrajectory(center1);
                 //place prop on spike mark
@@ -77,6 +86,8 @@ public class RedTop extends LinearOpMode {
                         .lineToLinearHeading(new Pose2d(35.5, 50, Math.toRadians(90)))
                         .build();
                 drive.followTrajectory(center2);
+                drive.turn(Math.toRadians(-5));
+                drive.followTrajectory(drive.trajectoryBuilder(center2.end()).forward(4).build());
                 //place pixel on canvas
                 lift.setPower(1);
                 sleep(liftDelay);

@@ -130,15 +130,11 @@ public class BasicOpMode extends LinearOpMode {
             else{
                 lift.setPower(0);
             }
-            if(test){
-                lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                lift.setTargetPosition(2000);
-            }
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time Test: " + runtime.toString());
             telemetry.addData("Motors", "left front(%.2f), right front(%.2f), left back(%.2f), right back(%.2f), lift(%.2f)", lfPower, rfPower, lbPower, rbPower, liftPower);
-            telemetry.addData("Motor Encoder", "enocder value(%d)", position);
+            telemetry.addData("Motor Encoder", "enocder value(%d)", lift.getCurrentPosition());
             telemetry.update();
         }
     }
