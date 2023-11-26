@@ -75,8 +75,7 @@ public class BasicOpMode extends LinearOpMode {
         leftBack = hardwareMap.get(DcMotor.class, "leftBack");
         rightBack = hardwareMap.get(DcMotor.class, "rightBack");
         lift = hardwareMap.get(DcMotor.class, "lift");
-//        intakeServo = hardwareMap.get(Servo.class, "intakeServo");
-//        rightServo = hardwareMap.get(Servo.class, "rightServo");
+        intakeServo = hardwareMap.get(Servo.class, "intakeServo");
 
 
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
@@ -124,11 +123,17 @@ public class BasicOpMode extends LinearOpMode {
             rightBack.setPower(rbPower);
 //
             //send power to lift
-            if(lift.getCurrentPosition() <= 5*537){
-                lift.setPower(liftPower);
-            }
-            else{
-                lift.setPower(0);
+            lift.setPower(liftPower);
+
+            //check if intake is running
+            if (intake) {
+                if (intaking) {
+                    intakeServo.setPosition(0);
+                    intaking = false;
+                } else {
+                    intakeServo.setPosition(1);
+                    intaking = true;
+                }
             }
 
             // Show the elapsed game time and wheel power.
