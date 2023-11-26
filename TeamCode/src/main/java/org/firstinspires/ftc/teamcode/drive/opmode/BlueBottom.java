@@ -42,7 +42,6 @@ public class BlueBottom extends LinearOpMode {
         initTfod();
         lift = hardwareMap.get(DcMotor.class, "lift");
 //        intakeServo = hardwareMap.get(Servo.class, "intakeServo");
-//        int TFODPrediction = 2;
         waitForStart();
         telemetryTfod();
         telemetry.update();

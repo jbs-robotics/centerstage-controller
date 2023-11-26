@@ -6,7 +6,6 @@ import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
@@ -25,7 +24,7 @@ import java.util.List;
 @Autonomous(group = "drive", name="Red Top")
 public class RedTop extends LinearOpMode {
     private DcMotor lift = null;
-    private Servo intake = null;
+    private Servo intake, lock = null;
     private int liftDelay = 1500;
 
     boolean USE_WEBCAM = true;
@@ -35,12 +34,13 @@ public class RedTop extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
-//        //intake = hardwareMap.get(Servo.class, "intake");
-//        //intake.setDirection(Servo.Direction.FORWARD);
+        intake = hardwareMap.get(Servo.class, "intakeServo");
+        lock = hardwareMap.get(Servo.class, "lock");
+        lock.setDirection(Servo.Direction.FORWARD);
+        intake.setDirection(Servo.Direction.FORWARD);
 //        initTfod();
         lift = hardwareMap.get(DcMotor.class, "lift");
         lift.setDirection(DcMotor.Direction.REVERSE);
-//        intakeServo = hardwareMap.get(Servo.class, "intakeServo");
         waitForStart();
 //        telemetryTfod();
 //        telemetry.update();
@@ -61,6 +61,7 @@ public class RedTop extends LinearOpMode {
                         .build();
                 drive.followTrajectory(forwardOffset);
                 //place prop on spike mark
+                placeOnSpike();
                 Trajectory left2 = drive.trajectoryBuilder(forwardOffset.end())
                         .lineToLinearHeading(new Pose2d(new Vector2d(18, 50), Math.toRadians(100.5)))
                         .build();
@@ -72,6 +73,7 @@ public class RedTop extends LinearOpMode {
                 drive.turn(Math.toRadians(-30));
                 drive.followTrajectory(offset2);
                 //place pixel on canvas
+                placeOnCanvas();
                 lift.setPower(1);
                 sleep(liftDelay);
                 lift.setPower(0);
@@ -83,6 +85,7 @@ public class RedTop extends LinearOpMode {
                         .build();
                 drive.followTrajectory(center1);
                 //place prop on spike mark
+                placeOnSpike();
                 Trajectory center2 = drive.trajectoryBuilder(center1.end())
                         .lineToLinearHeading(new Pose2d(35.5, 50, Math.toRadians(90)))
                         .build();
@@ -90,6 +93,7 @@ public class RedTop extends LinearOpMode {
                 drive.turn(Math.toRadians(-5));
                 drive.followTrajectory(drive.trajectoryBuilder(center2.end()).forward(4).build());
                 //place pixel on canvas
+                placeOnCanvas();
                 lift.setPower(1);
                 sleep(liftDelay);
                 lift.setPower(0);
@@ -105,12 +109,14 @@ public class RedTop extends LinearOpMode {
                 drive.followTrajectory(right2);
                 drive.turn(Math.toRadians(10));
                 //place prop on spike mark
+                placeOnSpike();
                 Trajectory right3 = drive.trajectoryBuilder(right2.end())
                         .lineToSplineHeading(new Pose2d(42, 50, Math.toRadians(90)))
                         .build();
                 drive.followTrajectory(right3);
                 drive.turn(Math.toRadians(30));
                 //place pixel on canvas
+                placeOnCanvas();
                 lift.setPower(1);
                 sleep(liftDelay);
                 lift.setPower(0);
@@ -120,23 +126,23 @@ public class RedTop extends LinearOpMode {
                 break;
         }
     }
+    private void placeOnSpike(){
+        lift.setPower(1);
+        sleep(liftDelay/4);
+        lift.setPower(0);
+        intake.setPosition(1);
+        sleep(liftDelay/4);
+        intake.setPosition(0);
+    }
+    private void placeOnCanvas(){
+        lift.setPower(1);
+        sleep(liftDelay);
+        lift.setPower(0);
+        intake.setPosition(1);
+    }
     private void initTfod() {
         tfod = tfod.easyCreateWithDefaults();
-        /* non-default options for tfod
-        * TfodProcessor.Builder myTfodProcessorBuilder;
-          TfodProcessor myTfodProcessor;
-          // Create a new TFOD Processor Builder object.
-          myTfodProcessorBuilder = new TfodProcessor.Builder();
 
-          // Optional: set other custom features of the TFOD Processor (4 are shown here).
-          myTfodProcessorBuilder.setMaxNumRecognitions(1);  // Max. number of recognitions the network will return
-          myTfodProcessorBuilder.setUseObjectTracker(true);  // Whether to use the object tracker
-          myTfodProcessorBuilder.setTrackerMaxOverlap((float) 0.2);  // Max. % of box overlapped by another box at recognition time
-          myTfodProcessorBuilder.setTrackerMinSize(16);  // Min. size of object that the object tracker will track
-
-          // Create a TFOD Processor by calling build()
-          myTfodProcessor = myTfodProcessorBuilder.build();
-        * */
         if (USE_WEBCAM){
             visionPortal = VisionPortal.easyCreateWithDefaults(
                     hardwareMap.get(WebcamName.class, "Webcam 1"), tfod);
@@ -163,3 +169,18 @@ public class RedTop extends LinearOpMode {
 
     }
 }
+/* non-default options for tfod
+        * TfodProcessor.Builder myTfodProcessorBuilder;
+          TfodProcessor myTfodProcessor;
+          // Create a new TFOD Processor Builder object.
+          myTfodProcessorBuilder = new TfodProcessor.Builder();
+
+          // Optional: set other custom features of the TFOD Processor (4 are shown here).
+          myTfodProcessorBuilder.setMaxNumRecognitions(1);  // Max. number of recognitions the network will return
+          myTfodProcessorBuilder.setUseObjectTracker(true);  // Whether to use the object tracker
+          myTfodProcessorBuilder.setTrackerMaxOverlap((float) 0.2);  // Max. % of box overlapped by another box at recognition time
+          myTfodProcessorBuilder.setTrackerMinSize(16);  // Min. size of object that the object tracker will track
+
+          // Create a TFOD Processor by calling build()
+          myTfodProcessor = myTfodProcessorBuilder.build();
+        * */

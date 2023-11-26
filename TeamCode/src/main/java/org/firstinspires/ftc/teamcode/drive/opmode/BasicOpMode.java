@@ -57,10 +57,10 @@ import com.qualcomm.robotcore.util.Range;
 public class BasicOpMode extends LinearOpMode {
 
     // Declare OpMode members.
-    private boolean intaking = false;
+    private boolean intaking, locked = false;
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor leftFront, leftBack, rightFront, rightBack, lift = null;
-    private Servo intakeServo = null;
+    private Servo intakeServo, lock = null;
 
     @Override
     public void runOpMode() {
@@ -76,6 +76,7 @@ public class BasicOpMode extends LinearOpMode {
         rightBack = hardwareMap.get(DcMotor.class, "rightBack");
         lift = hardwareMap.get(DcMotor.class, "lift");
         intakeServo = hardwareMap.get(Servo.class, "intakeServo");
+        lock = hardwareMap.get(Servo.class, "lock");
 
 
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
@@ -109,7 +110,7 @@ public class BasicOpMode extends LinearOpMode {
 
             double liftControl = gamepad2.left_stick_y;
             boolean intake = gamepad2.a;
-            boolean test = gamepad2.b;
+            boolean locking = gamepad2.b;
             double lfPower = Range.clip(drive + turn + strafe, -1.0, 1.0) ;
             double rfPower = Range.clip(drive - turn - strafe, -1.0, 1.0) ;
             double lbPower = Range.clip(drive + turn - strafe, -1.0, 1.0);
@@ -128,11 +129,20 @@ public class BasicOpMode extends LinearOpMode {
             //check if intake is running
             if (intake) {
                 if (intaking) {
-                    intakeServo.setPosition(0);
+                    intakeServo.setPosition(.25);
                     intaking = false;
                 } else {
                     intakeServo.setPosition(1);
                     intaking = true;
+                }
+            }
+            if (locking) {
+                if (locked) {
+                    lock.setPosition(0);
+                    locked = false;
+                } else {
+                    lock.setPosition(1);
+                    locked = true;
                 }
             }
 
