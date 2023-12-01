@@ -37,6 +37,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
+import java.math.*;
 
 
 /**
@@ -57,10 +58,10 @@ import com.qualcomm.robotcore.util.Range;
 public class BasicOpMode extends LinearOpMode {
 
     // Declare OpMode members.
-    private boolean intaking, locked = false;
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor leftFront, leftBack, rightFront, rightBack, lift = null;
     private Servo intakeServo, lock = null;
+    private double currentServoPos = 0, sensitivity = 1;
 
     @Override
     public void runOpMode() {
@@ -75,9 +76,8 @@ public class BasicOpMode extends LinearOpMode {
         leftBack = hardwareMap.get(DcMotor.class, "leftBack");
         rightBack = hardwareMap.get(DcMotor.class, "rightBack");
         lift = hardwareMap.get(DcMotor.class, "lift");
-        intakeServo = hardwareMap.get(Servo.class, "intakeServo");
+        intakeServo = hardwareMap.get(Servo.class, "intake");
         lock = hardwareMap.get(Servo.class, "lock");
-
 
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
         // Pushing the left stick forward MUST make robot go forward. So adjust these two lines based on your first test drive.
@@ -87,69 +87,66 @@ public class BasicOpMode extends LinearOpMode {
         rightFront.setDirection(DcMotor.Direction.FORWARD);
         leftBack.setDirection(DcMotor.Direction.REVERSE);
         rightBack.setDirection(DcMotor.Direction.FORWARD);
+
         lift.setDirection(DcMotor.Direction.FORWARD);
         lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         lift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         runtime.reset();
+        intakeServo.setPosition(currentServoPos);
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
             int position = lift.getCurrentPosition();
-
-
-            // Choose to drive using either Tank Mode, or POV Mode
-            // Comment out the method that's not used.  The default below is POV.
 
             // POV Mode uses left stick to go forward, and right stick to turn.
             // - This uses basic math to combine motions and is easier to drive straight.
             double drive = -gamepad1.left_stick_y;
             double turn  =  gamepad1.right_stick_x;
             double strafe = gamepad1.left_stick_x;
-
+            boolean sniperModeOn = gamepad2.left_bumper;
+            boolean sniperModeOff = gamepad2.right_bumper;
             double liftControl = gamepad2.left_stick_y;
-            boolean intake = gamepad2.a;
-            boolean locking = gamepad2.b;
+            double intake = -gamepad2.right_stick_y;
+
+            //a and b are switched on gamepad
+            boolean lockOn = gamepad2.b;
+            boolean lockOff = gamepad2.a;
+
+            //gamepad 1(drivebase control)
             double lfPower = Range.clip(drive + turn + strafe, -1.0, 1.0) ;
             double rfPower = Range.clip(drive - turn - strafe, -1.0, 1.0) ;
             double lbPower = Range.clip(drive + turn - strafe, -1.0, 1.0);
             double rbPower = Range.clip(drive - turn + strafe, -1.0, 1.0) ;
-            double liftPower = Range.clip(liftControl, -0.5, 0.5);
+
+            //gamepad 2(lift control)
+            double intakePos = Range.clip(intake, -sensitivity/180, sensitivity/180);
+            double liftPower = Range.clip(liftControl, -sensitivity, sensitivity);
 
             // Send calculated power to wheels
             leftFront.setPower(lfPower);
             leftBack.setPower(lbPower);
             rightFront.setPower(rfPower);
             rightBack.setPower(rbPower);
-//
+
             //send power to lift
             lift.setPower(liftPower);
 
             //check if intake is running
-            if (intake) {
-                if (intaking) {
-                    intakeServo.setPosition(.25);
-                    intaking = false;
-                } else {
-                    intakeServo.setPosition(1);
-                    intaking = true;
-                }
-            }
-            if (locking) {
-                if (locked) {
-                    lock.setPosition(0);
-                    locked = false;
-                } else {
-                    lock.setPosition(1);
-                    locked = true;
-                }
-            }
+            currentServoPos += intakePos;
+            currentServoPos = Math.max(0, currentServoPos);
+            currentServoPos = Math.min(.75, currentServoPos);
+            intakeServo.setPosition(currentServoPos);
+            if (lockOn) lock.setPosition(0);
+            if (lockOff) lock.setPosition(1);
+            if (sniperModeOff) sensitivity = 1;
+            if (sniperModeOn) sensitivity = 0.5;
 
-            // Show the elapsed game time and wheel power.
-            telemetry.addData("Status", "Run Time Test: " + runtime.toString());
-            telemetry.addData("Motors", "left front(%.2f), right front(%.2f), left back(%.2f), right back(%.2f), lift(%.2f)", lfPower, rfPower, lbPower, rbPower, liftPower);
-            telemetry.addData("Motor Encoder", "enocder value(%d)", lift.getCurrentPosition());
+            telemetry.addData("Current Intake Servo Pos: ", currentServoPos);
+            telemetry.addData("Sensitivity: ", sensitivity);
+
             telemetry.update();
         }
     }

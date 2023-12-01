@@ -17,7 +17,7 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 //import org.firstinspires.ftc.teamcode.drive.*;
 
 import java.util.List;
-
+//TODO: upload new version of code
 /*
  * This is an example of a more complex path to really test the tuning.
  */
@@ -25,7 +25,7 @@ import java.util.List;
 public class RedTop extends LinearOpMode {
     private DcMotor lift = null;
     private Servo intake, lock = null;
-    private int liftDelay = 1500;
+    private int liftDelay = 1000;
 
     boolean USE_WEBCAM = true;
     TfodProcessor tfod;
@@ -34,13 +34,14 @@ public class RedTop extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
-        intake = hardwareMap.get(Servo.class, "intakeServo");
+        intake = hardwareMap.get(Servo.class, "intake");
         lock = hardwareMap.get(Servo.class, "lock");
         lock.setDirection(Servo.Direction.FORWARD);
         intake.setDirection(Servo.Direction.FORWARD);
 //        initTfod();
         lift = hardwareMap.get(DcMotor.class, "lift");
         lift.setDirection(DcMotor.Direction.REVERSE);
+        intake.setPosition(1);
         waitForStart();
 //        telemetryTfod();
 //        telemetry.update();
@@ -62,22 +63,26 @@ public class RedTop extends LinearOpMode {
                 drive.followTrajectory(forwardOffset);
                 //place prop on spike mark
                 placeOnSpike();
+//                lift.setPower(1);
+//                sleep(liftDelay/5);
+//                lift.setPower(0);
                 Trajectory left2 = drive.trajectoryBuilder(forwardOffset.end())
                         .lineToLinearHeading(new Pose2d(new Vector2d(18, 50), Math.toRadians(100.5)))
                         .build();
                 drive.followTrajectory(left2);
-                Trajectory offset2 = drive.trajectoryBuilder(left2.end())
+                Trajectory Loffset2 = drive.trajectoryBuilder(left2.end())
                         .forward(10)
                         .build();
-
                 drive.turn(Math.toRadians(-30));
-                drive.followTrajectory(offset2);
+                drive.followTrajectory(Loffset2);
                 //place pixel on canvas
+//                lift.setPower(-1);
+//                sleep(liftDelay/5);
+//                lift.setPower(0);
                 placeOnCanvas();
                 lift.setPower(1);
                 sleep(liftDelay);
                 lift.setPower(0);
-
                 break;
             case "c": //center
                 Trajectory center1 = drive.trajectoryBuilder(new Pose2d(60, 10, Math.toRadians(180)))
@@ -90,8 +95,15 @@ public class RedTop extends LinearOpMode {
                         .lineToLinearHeading(new Pose2d(35.5, 50, Math.toRadians(90)))
                         .build();
                 drive.followTrajectory(center2);
-                drive.turn(Math.toRadians(-5));
-                drive.followTrajectory(drive.trajectoryBuilder(center2.end()).forward(4).build());
+                drive.turn(Math.toRadians(-25));
+                Trajectory center3 = drive.trajectoryBuilder(center2.end()).forward(4).build();
+                drive.followTrajectory(center3);
+                Trajectory center4 = drive.trajectoryBuilder(center3.end())
+                        .strafeRight(20)
+                        .build();
+                drive.followTrajectory(center4);
+                Trajectory center5 = drive.trajectoryBuilder(center4.end()).forward(5).build();
+                drive.followTrajectory(center5);
                 //place pixel on canvas
                 placeOnCanvas();
                 lift.setPower(1);
@@ -99,27 +111,41 @@ public class RedTop extends LinearOpMode {
                 lift.setPower(0);
                 break;
             case "r": //right
+//                lift.setPower(1);
+//                sleep(liftDelay/4);
+//                lift.setPower(0.01);
                 Trajectory right1 = drive.trajectoryBuilder(new Pose2d(60, 10, Math.toRadians(180)))
                         .strafeRight(27)
                         .build();
                 Trajectory right2 = drive.trajectoryBuilder(right1.end())
-                        .lineToSplineHeading(new Pose2d(30, 32, Math.toRadians(-90)))
+                        .lineToSplineHeading(new Pose2d(30, 32, Math.toRadians(-70)))
+                        .build();
+                Trajectory right4 = drive.trajectoryBuilder(right2.end())
+                        .forward(5)
+                        .build();
+                Trajectory right5 = drive.trajectoryBuilder(right4.end())
+                        .strafeRight(10)
                         .build();
                 drive.followTrajectory(right1);
                 drive.followTrajectory(right2);
-                drive.turn(Math.toRadians(10));
+                drive.followTrajectory(right4);
+                drive.followTrajectory(right5);
+//                drive.turn(Math.toRadians(20));
+//                drive.followTrajectory(Roffset1);
                 //place prop on spike mark
                 placeOnSpike();
-                Trajectory right3 = drive.trajectoryBuilder(right2.end())
-                        .lineToSplineHeading(new Pose2d(42, 50, Math.toRadians(90)))
+                Trajectory right3 = drive.trajectoryBuilder(right5.end())
+                        .lineToSplineHeading(new Pose2d(42, 50, Math.toRadians(115)))
                         .build();
                 drive.followTrajectory(right3);
-                drive.turn(Math.toRadians(30));
+                drive.turn(Math.toRadians(-40));
+                Trajectory Roffset2 = drive.trajectoryBuilder(right3.end())
+                        .forward(10)
+                        .build();
+                drive.followTrajectory(Roffset2);
                 //place pixel on canvas
                 placeOnCanvas();
-                lift.setPower(1);
-                sleep(liftDelay);
-                lift.setPower(0);
+
                 break;
             default:
                 telemetry.addData("wtf how", "no but actually how");
@@ -130,15 +156,17 @@ public class RedTop extends LinearOpMode {
         lift.setPower(1);
         sleep(liftDelay/4);
         lift.setPower(0);
-        intake.setPosition(1);
-        sleep(liftDelay/4);
         intake.setPosition(0);
+        sleep(4000);
+        intake.setPosition(1);
     }
     private void placeOnCanvas(){
         lift.setPower(1);
         sleep(liftDelay);
         lift.setPower(0);
-        intake.setPosition(1);
+        lock.setPosition(1);
+        intake.setPosition(0);
+
     }
     private void initTfod() {
         tfod = tfod.easyCreateWithDefaults();

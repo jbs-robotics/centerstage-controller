@@ -53,7 +53,7 @@ public class MeepMeepTesting {
         RoadRunnerBotEntity BTR = new DefaultBotBuilder(meepMeep)
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
                 .setConstraints(90, 90, Math.toRadians(180), Math.toRadians(180), 15)
-                //left
+                //right
                 .followTrajectorySequence(drive ->
                         drive.trajectorySequenceBuilder(new Pose2d(-60, 10, Math.toRadians(0)))
                                 .lineToSplineHeading(new Pose2d(-35, 10, Math.toRadians(-90)))
@@ -74,7 +74,7 @@ public class MeepMeepTesting {
                 );
         RoadRunnerBotEntity BTL = new DefaultBotBuilder(meepMeep)
                 .setConstraints(90, 90, Math.toRadians(180), Math.toRadians(180), 15)
-                //right
+                //left
                 .followTrajectorySequence(drive -> drive.trajectorySequenceBuilder(new Pose2d(-60, 10, Math.toRadians(0)))
                         .strafeLeft(25)
                         .lineToSplineHeading(new Pose2d(-30, 32, Math.toRadians(-90)))
@@ -133,9 +133,9 @@ public class MeepMeepTesting {
 //        meepMeep.setBackground(MeepMeep.Background.FIELD_POWERPLAY_OFFICIAL)
         meepMeep.setDarkMode(true)
                 .setBackgroundAlpha(0.95f)
-                .addEntity(BBC)
-                .addEntity(BBL)
-                .addEntity(BBR)
+                .addEntity(BTC)
+                .addEntity(BTL)
+                .addEntity(BTR)
                 .start();
     }
 }
