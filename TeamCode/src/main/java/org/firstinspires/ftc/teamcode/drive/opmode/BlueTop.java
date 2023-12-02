@@ -23,17 +23,16 @@ import java.util.List;
 @Autonomous(group = "drive", name="Blue Top")
 public class BlueTop extends LinearOpMode {
     private DcMotor lift = null;
-    private Servo intake = null;
-    private int liftDelay = 1500;
+    private int liftDelay = 1000;
 
     boolean USE_WEBCAM = true;
     TfodProcessor tfod;
     private VisionPortal visionPortal;
-    private Servo intakeServo, lock = null;
+    private Servo intake, lock = null;
     @Override
     public void runOpMode() throws InterruptedException {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
-        intakeServo = hardwareMap.get(Servo.class, "intakeServo");
+        intake = hardwareMap.get(Servo.class, "intake");
         lock = hardwareMap.get(Servo.class, "lock");
         intake.setDirection(Servo.Direction.FORWARD);
         lock.setDirection(Servo.Direction.FORWARD);
@@ -79,7 +78,7 @@ public class BlueTop extends LinearOpMode {
                 break;
             case "c": //center
                 Trajectory center1 = drive.trajectoryBuilder(drive.getPoseEstimate())
-                        .forward(23)
+                        .forward(20)
                         .build();
                 drive.followTrajectory(center1);
                 //place prop on spike mark
@@ -88,17 +87,17 @@ public class BlueTop extends LinearOpMode {
                         .lineToLinearHeading(new Pose2d(-35.5, 50, Math.toRadians(90)))
                         .build();
                 drive.followTrajectory(center2);
-                drive.turn(Math.toRadians(-25));
+                drive.turn(Math.toRadians(25));
                 Trajectory center3 = drive.trajectoryBuilder(center2.end())
                         .forward(4)
                         .build();
                 drive.followTrajectory(center3);
                 Trajectory center4 = drive.trajectoryBuilder(center3.end())
-                        .strafeLeft(20)
+                        .strafeLeft(12)
                         .build();
                 drive.followTrajectory(center4);
-                Trajectory center5 = drive.trajectoryBuilder(center4.end()).forward(5).build();
-                drive.followTrajectory(center5);
+//                Trajectory center5 = drive.trajectoryBuilder(center4.end()).forward(5).build();
+//                drive.followTrajectory(center5);
                 //place pixel on canvas
                 placeOnCanvas();
                 lift.setPower(1);
@@ -144,7 +143,7 @@ public class BlueTop extends LinearOpMode {
     }
     private void placeOnSpike(){
         lift.setPower(1);
-        sleep(liftDelay/4);
+        sleep(liftDelay/5);
         lift.setPower(0);
         intake.setPosition(0);
         sleep(4000);
@@ -152,7 +151,7 @@ public class BlueTop extends LinearOpMode {
     }
     private void placeOnCanvas(){
         lift.setPower(1);
-        sleep(liftDelay);
+        sleep(liftDelay/4);
         lift.setPower(0);
         lock.setPosition(1);
         intake.setPosition(0);

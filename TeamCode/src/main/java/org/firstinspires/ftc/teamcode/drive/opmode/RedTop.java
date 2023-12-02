@@ -86,7 +86,7 @@ public class RedTop extends LinearOpMode {
                 break;
             case "c": //center
                 Trajectory center1 = drive.trajectoryBuilder(new Pose2d(60, 10, Math.toRadians(180)))
-                        .forward(23)
+                        .forward(20)
                         .build();
                 drive.followTrajectory(center1);
                 //place prop on spike mark
@@ -102,8 +102,8 @@ public class RedTop extends LinearOpMode {
                         .strafeRight(20)
                         .build();
                 drive.followTrajectory(center4);
-                Trajectory center5 = drive.trajectoryBuilder(center4.end()).forward(5).build();
-                drive.followTrajectory(center5);
+//                Trajectory center5 = drive.trajectoryBuilder(center4.end()).forward(5).build();
+//                drive.followTrajectory(center5);
                 //place pixel on canvas
                 placeOnCanvas();
                 lift.setPower(1);
@@ -154,7 +154,7 @@ public class RedTop extends LinearOpMode {
     }
     private void placeOnSpike(){
         lift.setPower(1);
-        sleep(liftDelay/4);
+        sleep(liftDelay/5);
         lift.setPower(0);
         intake.setPosition(0);
         sleep(4000);
@@ -162,7 +162,7 @@ public class RedTop extends LinearOpMode {
     }
     private void placeOnCanvas(){
         lift.setPower(1);
-        sleep(liftDelay);
+        sleep(liftDelay/4);
         lift.setPower(0);
         lock.setPosition(1);
         intake.setPosition(0);

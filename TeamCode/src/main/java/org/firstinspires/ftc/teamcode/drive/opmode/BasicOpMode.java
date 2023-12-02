@@ -61,7 +61,7 @@ public class BasicOpMode extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor leftFront, leftBack, rightFront, rightBack, lift = null;
     private Servo intakeServo, lock = null;
-    private double currentServoPos = 0, sensitivity = 1;
+    private double currentServoPos = 0, sensitivity = 1, driveSensitivity = 1;
 
     @Override
     public void runOpMode() {
@@ -114,12 +114,13 @@ public class BasicOpMode extends LinearOpMode {
             //a and b are switched on gamepad
             boolean lockOn = gamepad2.b;
             boolean lockOff = gamepad2.a;
-
+            boolean driveSnipeOn = gamepad1.left_bumper;
+            boolean driveSnipeOff = gamepad1.right_bumper;
             //gamepad 1(drivebase control)
-            double lfPower = Range.clip(drive + turn + strafe, -1.0, 1.0) ;
-            double rfPower = Range.clip(drive - turn - strafe, -1.0, 1.0) ;
-            double lbPower = Range.clip(drive + turn - strafe, -1.0, 1.0);
-            double rbPower = Range.clip(drive - turn + strafe, -1.0, 1.0) ;
+            double lfPower = Range.clip(drive + turn + strafe, -driveSensitivity, driveSensitivity) ;
+            double rfPower = Range.clip(drive - turn - strafe, -driveSensitivity, driveSensitivity) ;
+            double lbPower = Range.clip(drive + turn - strafe, -driveSensitivity, driveSensitivity);
+            double rbPower = Range.clip(drive - turn + strafe, -driveSensitivity, driveSensitivity) ;
 
             //gamepad 2(lift control)
             double intakePos = Range.clip(intake, -sensitivity/180, sensitivity/180);
@@ -143,9 +144,11 @@ public class BasicOpMode extends LinearOpMode {
             if (lockOff) lock.setPosition(1);
             if (sniperModeOff) sensitivity = 1;
             if (sniperModeOn) sensitivity = 0.5;
-
+            if (driveSnipeOn) driveSensitivity = 0.25;
+            if (driveSnipeOff) driveSensitivity = 1;
             telemetry.addData("Current Intake Servo Pos: ", currentServoPos);
             telemetry.addData("Sensitivity: ", sensitivity);
+            telemetry.addData("Drive Sensitivity: ", driveSensitivity);
 
             telemetry.update();
         }
