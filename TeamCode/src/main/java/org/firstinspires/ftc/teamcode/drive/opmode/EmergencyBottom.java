@@ -17,29 +17,33 @@ import org.firstinspires.ftc.vision.tfod.TfodProcessor;
 
 import java.util.List;
 
+//TODO: upload new version of code
 /*
  * This is an example of a more complex path to really test the tuning.
  */
-@Autonomous(group = "drive", name="Blue Top")
-public class BlueTop extends LinearOpMode {
+@Autonomous(group = "drive", name="Temporary Bottom(USE THIS ONE FOR NOW)")
+public class EmergencyBottom extends LinearOpMode {
     private DcMotor lift = null;
+    private Servo intake, lock = null;
     private int liftDelay = 1000;
     private double intakeUp = 0.75;
 
     boolean USE_WEBCAM = true;
+
     TfodProcessor tfod;
     private VisionPortal visionPortal;
-    private Servo intake, lock = null;
+//    private Servo intakeServo = null;
     @Override
     public void runOpMode() throws InterruptedException {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         intake = hardwareMap.get(Servo.class, "lock");
 //        lock = hardwareMap.get(Servo.class, "intake");
-        intake.setDirection(Servo.Direction.FORWARD);
 //        lock.setDirection(Servo.Direction.FORWARD);
+        intake.setDirection(Servo.Direction.FORWARD);
 //        initTfod();
         lift = hardwareMap.get(DcMotor.class, "lift");
         lift.setDirection(DcMotor.Direction.REVERSE);
+        intake.setPosition(intakeUp);
         waitForStart();
 //        telemetryTfod();
 //        telemetry.update();
@@ -47,38 +51,43 @@ public class BlueTop extends LinearOpMode {
 //        String TFODPrediction = currentRecognitions.get(0).getLabel();
         String TFODPrediction = "c";
         if (isStopRequested()) return;
-        drive.setPoseEstimate(new Pose2d(new Vector2d(-60, 10), Math.toRadians(0)));
+        drive.setPoseEstimate(new Pose2d(new Vector2d(60, 10), Math.toRadians(180)));
 
         switch(TFODPrediction) {
-            case "r": //right
-                Trajectory right1 = drive.trajectoryBuilder(drive.getPoseEstimate())
-                        .lineToLinearHeading(new Pose2d(new Vector2d(-25, 5), Math.toRadians(80)))
+            case "l": //left
+                Trajectory left1 = drive.trajectoryBuilder(new Pose2d(60, 10, Math.toRadians(180)))
+                        .lineToLinearHeading(new Pose2d(new Vector2d(25, 5), Math.toRadians(-80)))
                         .build();
-                drive.followTrajectory(right1);
-                Trajectory forwardOffset = drive.trajectoryBuilder(right1.end())
+                drive.followTrajectory(left1);
+                Trajectory forwardOffset = drive.trajectoryBuilder(left1.end())
                         .forward(5)
                         .build();
                 drive.followTrajectory(forwardOffset);
                 //place prop on spike mark
                 placeOnSpike();
-                Trajectory right2 = drive.trajectoryBuilder(forwardOffset.end())
-                        .lineToLinearHeading(new Pose2d(new Vector2d(-18, 50), Math.toRadians(100.5)))
+//                lift.setPower(1);
+//                sleep(liftDelay/5);
+//                lift.setPower(0);
+                Trajectory left2 = drive.trajectoryBuilder(forwardOffset.end())
+                        .lineToLinearHeading(new Pose2d(new Vector2d(18, 50), Math.toRadians(100.5)))
                         .build();
-                drive.followTrajectory(right2);
-                Trajectory offset2 = drive.trajectoryBuilder(right2.end())
+                drive.followTrajectory(left2);
+                Trajectory Loffset2 = drive.trajectoryBuilder(left2.end())
                         .forward(10)
                         .build();
-
-                drive.turn(Math.toRadians(30));
-                drive.followTrajectory(offset2);
+                drive.turn(Math.toRadians(-30));
+                drive.followTrajectory(Loffset2);
                 //place pixel on canvas
+//                lift.setPower(-1);
+//                sleep(liftDelay/5);
+//                lift.setPower(0);
                 placeOnCanvas();
                 lift.setPower(1);
                 sleep(liftDelay);
                 lift.setPower(0);
                 break;
             case "c": //center
-                Trajectory center1 = drive.trajectoryBuilder(drive.getPoseEstimate())
+                Trajectory center1 = drive.trajectoryBuilder(new Pose2d(60, 10, Math.toRadians(180)))
                         .forward(24)
                         .build();
                 drive.followTrajectory(center1);
@@ -88,20 +97,17 @@ public class BlueTop extends LinearOpMode {
                 drive.followTrajectory(Coffset);
                 //place prop on spike mark
                 placeOnSpike();
-
-                Trajectory center2 = drive.trajectoryBuilder(Coffset.end())
-                        .lineToLinearHeading(new Pose2d(-35.5, 50, Math.toRadians(90)))
-                        .build();
-                drive.followTrajectory(center2);
-                drive.turn(Math.toRadians(25));
-                Trajectory center3 = drive.trajectoryBuilder(center2.end())
-                        .forward(4)
-                        .build();
-                drive.followTrajectory(center3);
-                Trajectory center4 = drive.trajectoryBuilder(center3.end())
-                        .strafeLeft(12)
-                        .build();
-                drive.followTrajectory(center4);
+//                Trajectory center2 = drive.trajectoryBuilder(Coffset.end())
+//                        .lineToLinearHeading(new Pose2d(35.5, 50, Math.toRadians(90)))
+//                        .build();
+//                drive.followTrajectory(center2);
+//                drive.turn(Math.toRadians(-25));
+//                Trajectory center3 = drive.trajectoryBuilder(center2.end()).forward(4).build();
+//                drive.followTrajectory(center3);
+//                Trajectory center4 = drive.trajectoryBuilder(center3.end())
+//                        .strafeRight(20)
+//                        .build();
+//                drive.followTrajectory(center4);
 //                Trajectory center5 = drive.trajectoryBuilder(center4.end()).forward(5).build();
 //                drive.followTrajectory(center5);
                 //place pixel on canvas
@@ -110,37 +116,42 @@ public class BlueTop extends LinearOpMode {
 //                sleep(liftDelay);
 //                lift.setPower(0);
                 break;
-            case "l": //left
-                Trajectory left1 = drive.trajectoryBuilder(drive.getPoseEstimate())
+            case "r": //right
+//                lift.setPower(1);
+//                sleep(liftDelay/4);
+//                lift.setPower(0.01);
+                Trajectory right1 = drive.trajectoryBuilder(new Pose2d(60, 10, Math.toRadians(180)))
                         .strafeRight(27)
                         .build();
-                Trajectory left2 = drive.trajectoryBuilder(left1.end())
-                        .lineToSplineHeading(new Pose2d(-30, 32, Math.toRadians(-90)))
+                Trajectory right2 = drive.trajectoryBuilder(right1.end())
+                        .lineToSplineHeading(new Pose2d(30, 32, Math.toRadians(-70)))
                         .build();
-                Trajectory left3 = drive.trajectoryBuilder(left2.end())
+                Trajectory right4 = drive.trajectoryBuilder(right2.end())
                         .forward(5)
                         .build();
-                Trajectory left4 = drive.trajectoryBuilder(left3.end())
-                        .strafeLeft(10)
+                Trajectory right5 = drive.trajectoryBuilder(right4.end())
+                        .strafeRight(10)
                         .build();
-                drive.followTrajectory(left1);
-                drive.followTrajectory(left2);
-                drive.followTrajectory(left3);
-                drive.followTrajectory(left4);
-//                drive.turn(Math.toRadians(-10));
+                drive.followTrajectory(right1);
+                drive.followTrajectory(right2);
+                drive.followTrajectory(right4);
+                drive.followTrajectory(right5);
+//                drive.turn(Math.toRadians(20));
+//                drive.followTrajectory(Roffset1);
                 //place prop on spike mark
                 placeOnSpike();
-                Trajectory left5 = drive.trajectoryBuilder(left4.end())
-                        .lineToSplineHeading(new Pose2d(-42, 50, Math.toRadians(115)))
+                Trajectory right3 = drive.trajectoryBuilder(right5.end())
+                        .lineToSplineHeading(new Pose2d(42, 50, Math.toRadians(115)))
                         .build();
-                drive.followTrajectory(left5);
+                drive.followTrajectory(right3);
                 drive.turn(Math.toRadians(-40));
-                drive.followTrajectory(drive.trajectoryBuilder(left5.end()).forward(10).build());
+                Trajectory Roffset2 = drive.trajectoryBuilder(right3.end())
+                        .forward(10)
+                        .build();
+                drive.followTrajectory(Roffset2);
                 //place pixel on canvas
                 placeOnCanvas();
-                lift.setPower(1);
-                sleep(liftDelay);
-                lift.setPower(0);
+
                 break;
             default:
                 telemetry.addData("wtf how", "no but actually how");
@@ -161,24 +172,11 @@ public class BlueTop extends LinearOpMode {
         lift.setPower(0);
 //        lock.setPosition(1);
         intake.setPosition(0);
+
     }
     private void initTfod() {
         tfod = tfod.easyCreateWithDefaults();
-        /* non-default options for tfod
-        * TfodProcessor.Builder myTfodProcessorBuilder;
-          TfodProcessor myTfodProcessor;
-          // Create a new TFOD Processor Builder object.
-          myTfodProcessorBuilder = new TfodProcessor.Builder();
 
-          // Optional: set other custom features of the TFOD Processor (4 are shown here).
-          myTfodProcessorBuilder.setMaxNumRecognitions(1);  // Max. number of recognitions the network will return
-          myTfodProcessorBuilder.setUseObjectTracker(true);  // Whether to use the object tracker
-          myTfodProcessorBuilder.setTrackerMaxOverlap((float) 0.2);  // Max. % of box overlapped by another box at recognition time
-          myTfodProcessorBuilder.setTrackerMinSize(16);  // Min. size of object that the object tracker will track
-
-          // Create a TFOD Processor by calling build()
-          myTfodProcessor = myTfodProcessorBuilder.build();
-        * */
         if (USE_WEBCAM){
             visionPortal = VisionPortal.easyCreateWithDefaults(
                     hardwareMap.get(WebcamName.class, "Webcam 1"), tfod);
@@ -205,3 +203,18 @@ public class BlueTop extends LinearOpMode {
 
     }
 }
+/* non-default options for tfod
+        * TfodProcessor.Builder myTfodProcessorBuilder;
+          TfodProcessor myTfodProcessor;
+          // Create a new TFOD Processor Builder object.
+          myTfodProcessorBuilder = new TfodProcessor.Builder();
+
+          // Optional: set other custom features of the TFOD Processor (4 are shown here).
+          myTfodProcessorBuilder.setMaxNumRecognitions(1);  // Max. number of recognitions the network will return
+          myTfodProcessorBuilder.setUseObjectTracker(true);  // Whether to use the object tracker
+          myTfodProcessorBuilder.setTrackerMaxOverlap((float) 0.2);  // Max. % of box overlapped by another box at recognition time
+          myTfodProcessorBuilder.setTrackerMinSize(16);  // Min. size of object that the object tracker will track
+
+          // Create a TFOD Processor by calling build()
+          myTfodProcessor = myTfodProcessorBuilder.build();
+        * */

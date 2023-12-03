@@ -32,6 +32,7 @@ package org.firstinspires.ftc.teamcode.drive.opmode;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -59,9 +60,10 @@ public class BasicOpMode extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
-    private DcMotor leftFront, leftBack, rightFront, rightBack, lift = null;
+    private DcMotor leftFront, leftBack, rightFront, rightBack, lift, hook = null;
     private Servo intakeServo, lock = null;
-    private double currentServoPos = 0, sensitivity = 1, driveSensitivity = 1;
+    private CRServo hookServo = null;
+    private double currentServoPos = 0, sensitivity = 1, driveSensitivity = .75;
 
     @Override
     public void runOpMode() {
@@ -76,9 +78,10 @@ public class BasicOpMode extends LinearOpMode {
         leftBack = hardwareMap.get(DcMotor.class, "leftBack");
         rightBack = hardwareMap.get(DcMotor.class, "rightBack");
         lift = hardwareMap.get(DcMotor.class, "lift");
-        intakeServo = hardwareMap.get(Servo.class, "intake");
-        lock = hardwareMap.get(Servo.class, "lock");
-
+        intakeServo = hardwareMap.get(Servo.class, "lock");
+        lock = hardwareMap.get(Servo.class, "intake");
+        hook = hardwareMap.get(DcMotor.class, "hook");
+        hookServo = hardwareMap.get(CRServo.class, "hookServo");
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
         // Pushing the left stick forward MUST make robot go forward. So adjust these two lines based on your first test drive.
         // Note: The settings here assume direct drive on left and right wheels.  Gear Reduction or 90 Deg drives may require direction flips
@@ -110,7 +113,9 @@ public class BasicOpMode extends LinearOpMode {
             boolean sniperModeOff = gamepad2.right_bumper;
             double liftControl = gamepad2.left_stick_y;
             double intake = -gamepad2.right_stick_y;
-
+            boolean hookBtn = gamepad2.y;
+            boolean hookServoDown = gamepad2.dpad_down;
+            boolean hookServoUp = gamepad2.dpad_up;
             //a and b are switched on gamepad
             boolean lockOn = gamepad2.b;
             boolean lockOff = gamepad2.a;
@@ -145,11 +150,25 @@ public class BasicOpMode extends LinearOpMode {
             if (sniperModeOff) sensitivity = 1;
             if (sniperModeOn) sensitivity = 0.5;
             if (driveSnipeOn) driveSensitivity = 0.25;
-            if (driveSnipeOff) driveSensitivity = 1;
+            if (driveSnipeOff) driveSensitivity = .75;
+            if (hookBtn) {
+                hook.setPower(1);
+//                sleep(7000);
+                hook.setPower(0);
+            }
+            if(hookServoDown) hookServo.setPower(1);
+            if(hookServoUp) hookServo.setPower(-2);
+            if(gamepad2.x){
+                hook.setPower(-1);
+                hook.setPower(0);
+            }
+
             telemetry.addData("Current Intake Servo Pos: ", currentServoPos);
             telemetry.addData("Sensitivity: ", sensitivity);
             telemetry.addData("Drive Sensitivity: ", driveSensitivity);
-
+            telemetry.addData("hookServoDown: ", hookServoDown);
+            telemetry.addData("hookServoUp: ", hookServoUp);
+            telemetry.addData("Hook Power", hookServo.getPower());
             telemetry.update();
         }
     }

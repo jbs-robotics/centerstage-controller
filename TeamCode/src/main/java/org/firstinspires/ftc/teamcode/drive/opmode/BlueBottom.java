@@ -26,6 +26,8 @@ public class BlueBottom extends LinearOpMode {
     private Servo intake = null;
     boolean USE_WEBCAM = true;
     TfodProcessor tfod;
+    private int liftDelay = 1000;
+
     private VisionPortal visionPortal;
 //    private Servo intakeServo = null;
     @Override
@@ -43,10 +45,11 @@ public class BlueBottom extends LinearOpMode {
         lift = hardwareMap.get(DcMotor.class, "lift");
 //        intakeServo = hardwareMap.get(Servo.class, "intakeServo");
         waitForStart();
-        telemetryTfod();
+//        telemetryTfod();
         telemetry.update();
-        List<Recognition> currentRecognitions = tfod.getRecognitions();
-        String TFODPrediction = currentRecognitions.get(0).getLabel();
+//        List<Recognition> currentRecognitions = tfod.getRecognitions();
+//        String TFODPrediction = currentRecognitions.get(0).getLabel();
+        String TFODPrediction = "c";
         if (isStopRequested()) return;
         drive.setPoseEstimate(new Pose2d(new Vector2d(60, 10), Math.toRadians(180)));
         switch(TFODPrediction){
@@ -68,17 +71,23 @@ public class BlueBottom extends LinearOpMode {
                 break;
             case "c": //center
                 Trajectory center1 = drive.trajectoryBuilder(new Pose2d(-60, -37, Math.toRadians(180)))
-                        .forward(27)
+                        .forward(23)
                         .build();
                 drive.followTrajectory(center1);
                 //place pixel on spike mark
-                Trajectory center2 = drive.trajectoryBuilder(center1.end())
-                        .splineToSplineHeading(new Pose2d(-60, -37, Math.toRadians(90)), Math.toRadians(360))
-                        .splineToConstantHeading(new Vector2d(-55, -12), Math.toRadians(0))
-                        .splineToConstantHeading(new Vector2d(-48, -12), Math.toRadians(0))
-                        .splineToConstantHeading(new Vector2d(-35.5, 50), Math.toRadians(90))
-                        .build();
-                drive.followTrajectory(center2);
+                placeOnSpike();
+//                Trajectory center1 = drive.trajectoryBuilder(new Pose2d(-60, -37, Math.toRadians(180)))
+//                        .forward(27)
+//                        .build();
+//                drive.followTrajectory(center1);
+//                //place pixel on spike mark
+//                Trajectory center2 = drive.trajectoryBuilder(center1.end())
+//                        .splineToSplineHeading(new Pose2d(-60, -37, Math.toRadians(90)), Math.toRadians(360))
+//                        .splineToConstantHeading(new Vector2d(-55, -12), Math.toRadians(0))
+//                        .splineToConstantHeading(new Vector2d(-48, -12), Math.toRadians(0))
+//                        .splineToConstantHeading(new Vector2d(-35.5, 50), Math.toRadians(90))
+//                        .build();
+//                drive.followTrajectory(center2);
                 //place pixel on canvas
                 break;
             case "r": //right
@@ -133,6 +142,14 @@ public class BlueBottom extends LinearOpMode {
             visionPortal = VisionPortal.easyCreateWithDefaults(
                     BuiltinCameraDirection.BACK, tfod);
         }
+    }
+    private void placeOnSpike(){
+        lift.setPower(1);
+        sleep(liftDelay/5);
+        lift.setPower(0);
+        intake.setPosition(0);
+        sleep(4000);
+        intake.setPosition(1);
     }
     private void telemetryTfod() {
 
