@@ -8,19 +8,13 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.vision.VisionPortal;
-import org.firstinspires.ftc.vision.tfod.TfodProcessor;
-import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraRotation;
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 
-import java.util.List;
 //TODO: upload new version of code
 /*
  * This is an example of a more complex path to really test the tuning.
@@ -29,7 +23,7 @@ import java.util.List;
 public class RedTop extends LinearOpMode {
     private DcMotor lift = null;
     private OpenCvCamera webcam = null;
-    private EmptyPipeline pipeline = null;
+    private ColorDetectorPipeline pipeline = null;
     private Servo intake, lock = null;
     private int liftDelay = 1000;
     private double intakeUp = 0.75, intakeDown = 0;
@@ -42,7 +36,7 @@ public class RedTop extends LinearOpMode {
                 .getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         webcam = OpenCvCameraFactory.getInstance()
                 .createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
-        pipeline = new EmptyPipeline(telemetry, hardwareMap, 0);
+        pipeline = new ColorDetectorPipeline(telemetry, hardwareMap, 0);
         webcam.setPipeline(pipeline);
         webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
         {

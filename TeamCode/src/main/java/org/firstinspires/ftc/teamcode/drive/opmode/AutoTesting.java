@@ -1,21 +1,15 @@
 package org.firstinspires.ftc.teamcode.drive.opmode;
 
 import android.content.res.AssetFileDescriptor;
-import android.graphics.Bitmap;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import org.firstinspires.ftc.robotcore.external.function.Continuation;
-import org.opencv.core.Mat;
-import org.opencv.core.Size;
-import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.openftc.easyopencv.OpenCvCameraFactory;
-import org.tensorflow.lite.Interpreter;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -27,8 +21,7 @@ import java.nio.channels.FileChannel;
 public class AutoTesting extends LinearOpMode {
     private DcMotor lift = null;
     private OpenCvCamera webcam = null;
-    private EmptyPipeline pipeline = null;
-    private Interpreter tflite;
+    private ColorDetectorPipeline pipeline = null;
     private int liftDelay = 1500;
     private static int NUM_CLASSES=3;
     private float[][] output = new float[1][NUM_CLASSES];
@@ -49,22 +42,13 @@ public class AutoTesting extends LinearOpMode {
         String[] classLabels = {"ClassA", "ClassB", "ClassC"};
         return classLabels[maxIndex];
     }
-    public static Interpreter loadModel(String modelPath) throws IOException {
-        File modelFile = new File(modelPath);
-        MappedByteBuffer modelBuffer = new FileInputStream(modelFile).getChannel().map(FileChannel.MapMode.READ_ONLY, 0, modelFile.length());
-
-        Interpreter.Options options = new Interpreter.Options();
-        Interpreter tfliteInterpreter = new Interpreter(modelBuffer, options);
-
-        return tfliteInterpreter;
-    }
     @Override
     public void runOpMode() {
         int cameraMonitorViewId = hardwareMap.appContext.getResources()
                 .getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         webcam = OpenCvCameraFactory.getInstance()
                 .createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
-        pipeline = new EmptyPipeline(telemetry, hardwareMap, 0, 40, 40);
+        pipeline = new ColorDetectorPipeline(telemetry, hardwareMap, 0, 40, 40);
 
         webcam.setPipeline(pipeline);
         webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
