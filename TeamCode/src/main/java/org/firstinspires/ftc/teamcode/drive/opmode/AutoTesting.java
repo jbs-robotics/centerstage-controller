@@ -68,7 +68,7 @@ public class AutoTesting extends LinearOpMode {
         telemetry.addData("region2Average", pipeline.getRegion2Average()[0]);
         waitForStart();
 //        try {
-//            tflite = loadModel("blue.tflite");
+//            tflite = loadModel("Blue.tflite");
 //        } catch (IOException e) {
 //            e.printStackTrace();
 //        }
