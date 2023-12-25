@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.tfrec.views;
 
 import android.annotation.SuppressLint;
-import androidx.fragment.app.Fragment;
+import android.app.Fragment;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.os.Bundle;

@@ -1,8 +1,8 @@
 package org.firstinspires.ftc.teamcode.tfrec;
 
 import android.app.Activity;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
+import android.app.Fragment;
+
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -89,8 +89,10 @@ public class Detector implements ImageReader.OnImageAvailableListener, Camera.Pr
         Log.d(TAG, "Classifier. Starting Init method");
         appContext = ctx;
         telemetry = t;
-        tfodMonitorViewId = appContext.getResources().getIdentifier(
-                "tfodMonitorViewId", "id", appContext.getPackageName());
+        // TODO: Fix the below code? Idk man, it just can't be 0.
+        //tfodMonitorViewId = appContext.getResources().getIdentifier(
+        //        "tfodMonitorViewId", "id", appContext.getPackageName());
+        tfodMonitorViewId = 1;
         try {
             ((Activity)appContext).runOnUiThread(new Runnable() {
                 @Override
@@ -130,8 +132,8 @@ public class Detector implements ImageReader.OnImageAvailableListener, Camera.Pr
             handler = null;
             if (fragment != null) {
                 // Line below is deprecated as of Android 28
-                // ((Activity) appContext).getFragmentManager().beginTransaction().remove(fragment).commit();
-                ((FragmentActivity) appContext).getSupportFragmentManager().beginTransaction().remove(fragment).commit();
+                ((Activity) appContext).getFragmentManager().beginTransaction().remove(fragment).commit();
+                //((FragmentActivity) appContext).getSupportFragmentManager().beginTransaction().remove(fragment).commit();
             }
 
         } catch (final InterruptedException e) {
@@ -209,10 +211,9 @@ public class Detector implements ImageReader.OnImageAvailableListener, Camera.Pr
             fragment =
                     new LegacyCameraConnectionFragment(this, getLayoutId(), getDesiredPreviewFrameSize(), telemetry);
         }
-
         // Following line is deprecated as of Android 28
-        // ((Activity)appContext).getFragmentManager().beginTransaction().replace(tfodMonitorViewId, fragment).commit();
-        ((FragmentActivity) appContext).getSupportFragmentManager().beginTransaction().replace(tfodMonitorViewId, fragment).commit();
+        ((Activity)appContext).getFragmentManager().beginTransaction().replace(tfodMonitorViewId, fragment).commit();
+        //((FragmentActivity) context).getSupportFragmentManager().beginTransaction().replace(tfodMonitorViewId, fragment).commit();
         Log.d(TAG, "SetFragment. Complete");
     }
 
