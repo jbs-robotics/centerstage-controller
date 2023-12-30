@@ -15,7 +15,7 @@ import org.opencv.core.Scalar;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvPipeline;
-import org.tensorflow.lite.support.common.FileUtil;
+//import org.tensorflow.lite.support.common.FileUtil;
 
 import java.io.FileInputStream;
 import java.io.IOException;
