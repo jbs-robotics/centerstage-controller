@@ -10,6 +10,8 @@ import org.firstinspires.ftc.teamcode.util.GenericDetector;
 // Control Hub ADB Terminal Command for Reference
 // adb.exe connect 192.168.43.1:5555
 
+@Disabled
+@Deprecated
 @Autonomous(name = "TFRec test", group = "Concept")
 public class GenericRecognitionTest extends LinearOpMode {
 

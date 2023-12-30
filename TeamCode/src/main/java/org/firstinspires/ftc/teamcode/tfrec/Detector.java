@@ -37,6 +37,9 @@ import org.firstinspires.ftc.teamcode.tfrec.views.LegacyCameraConnectionFragment
 import java.nio.ByteBuffer;
 import java.util.List;
 
+import android.content.pm.PackageManager;
+
+@Deprecated
 public class Detector implements ImageReader.OnImageAvailableListener, Camera.PreviewCallback {
     private static final String TAG = "Detector";
     private Bitmap rgbFrameBitmap = null;
@@ -90,9 +93,8 @@ public class Detector implements ImageReader.OnImageAvailableListener, Camera.Pr
         appContext = ctx;
         telemetry = t;
         // TODO: Fix the below code? Idk man, it just can't be 0.
-        //tfodMonitorViewId = appContext.getResources().getIdentifier(
-        //        "tfodMonitorViewId", "id", appContext.getPackageName());
-        tfodMonitorViewId = 1;
+        tfodMonitorViewId = appContext.getResources().getIdentifier(
+                "tfodMonitorViewId", "id", appContext.getPackageName());
         try {
             ((Activity)appContext).runOnUiThread(new Runnable() {
                 @Override
@@ -146,7 +148,10 @@ public class Detector implements ImageReader.OnImageAvailableListener, Camera.Pr
         startProcessing();
         final CameraManager manager = (CameraManager) appContext.getSystemService(Context.CAMERA_SERVICE);
         try {
-            for (final String cameraId : manager.getCameraIdList()) {
+            boolean debug = appContext.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_EXTERNAL);
+
+            final String[] cameraIds = manager.getCameraIdList();
+            for (String cameraId : cameraIds) {
                 final CameraCharacteristics characteristics = manager.getCameraCharacteristics(cameraId);
                 Log.d(TAG, String.format("Activation. Cam ID: %s", cameraId));
 
