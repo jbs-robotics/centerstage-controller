@@ -75,28 +75,25 @@ public class RedTop extends LinearOpMode {
                         .lineToLinearHeading(new Pose2d(new Vector2d(25, 5), Math.toRadians(-80)))
                         .build();
                 drive.followTrajectory(left1);
-                Trajectory forwardOffset = drive.trajectoryBuilder(left1.end())
-                        .forward(2)
-                        .build();
-                drive.followTrajectory(forwardOffset);
-                Trajectory lOffset1 = drive.trajectoryBuilder(forwardOffset.end())
-                        .strafeRight(4)
-                        .build();
-                drive.followTrajectory(lOffset1);
+//                Trajectory forwardOffset = drive.trajectoryBuilder(left1.end())
+//                        .forward(2)
+//                        .build();
+//                drive.followTrajectory(forwardOffset);
+//                Trajectory lOffset1 = drive.trajectoryBuilder(forwardOffset.end())
+//                        .strafeRight(4)
+//                        .build();
+//                drive.followTrajectory(lOffset1);
                 //place prop on spike mark
                 placeOnSpike();
-//                lift.setPower(1);
-//                sleep(liftDelay/5);
-//                lift.setPower(0);
-                Trajectory left2 = drive.trajectoryBuilder(lOffset1.end())
+                Trajectory left2 = drive.trajectoryBuilder(left1.end())
                         .lineToLinearHeading(new Pose2d(new Vector2d(18, 50), Math.toRadians(100.5)))
                         .build();
                 drive.followTrajectory(left2);
-                Trajectory Loffset2 = drive.trajectoryBuilder(left2.end())
-                        .forward(10)
-                        .build();
-                drive.turn(Math.toRadians(-30));
-                drive.followTrajectory(Loffset2);
+//                Trajectory Loffset2 = drive.trajectoryBuilder(left2.end())
+//                        .forward(10)
+//                        .build();
+//                drive.turn(Math.toRadians(-30));
+//                drive.followTrajectory(Loffset2);
                 //place pixel on canvas
 //                lift.setPower(-1);
 //                sleep(liftDelay/5);
@@ -111,23 +108,23 @@ public class RedTop extends LinearOpMode {
                         .forward(22)
                         .build();
                 drive.followTrajectory(center1);
-                Trajectory Coffset = drive.trajectoryBuilder(center1.end())
-                        .strafeLeft(3)
-                        .build();
-                drive.followTrajectory(Coffset);
+//                Trajectory Coffset = drive.trajectoryBuilder(center1.end())
+//                        .strafeLeft(3)
+//                        .build();
+//                drive.followTrajectory(Coffset);
                 //place prop on spike mark
                 placeOnSpike();
-                Trajectory center2 = drive.trajectoryBuilder(Coffset.end())
+                Trajectory center2 = drive.trajectoryBuilder(center1.end())
                         .lineToLinearHeading(new Pose2d(35.5, 50, Math.toRadians(90)))
                         .build();
                 drive.followTrajectory(center2);
-                drive.turn(Math.toRadians(-25));
-                Trajectory center3 = drive.trajectoryBuilder(center2.end()).forward(4).build();
-                drive.followTrajectory(center3);
-                Trajectory center4 = drive.trajectoryBuilder(center3.end())
-                        .strafeRight(20)
-                        .build();
-                drive.followTrajectory(center4);
+//                drive.turn(Math.toRadians(-25));
+//                Trajectory center3 = drive.trajectoryBuilder(center2.end()).forward(4).build();
+//                drive.followTrajectory(center3);
+//                Trajectory center4 = drive.trajectoryBuilder(center3.end())
+//                        .strafeRight(20)
+//                        .build();
+//                drive.followTrajectory(center4);
 //                Trajectory center5 = drive.trajectoryBuilder(center4.end()).forward(5).build();
 //                drive.followTrajectory(center5);
                 //place pixel on canvas
@@ -146,37 +143,37 @@ public class RedTop extends LinearOpMode {
                 Trajectory right2 = drive.trajectoryBuilder(right1.end())
                         .lineToSplineHeading(new Pose2d(30, 32, Math.toRadians(-70)))
                         .build();
-                Trajectory rOffset1 = drive.trajectoryBuilder(right2.end())
-                        .back(6)
-                        .build();
-                Trajectory rOffset2 = drive.trajectoryBuilder(rOffset1.end())
-                        .strafeRight(3)
-                        .build();
-                Trajectory right4 = drive.trajectoryBuilder(right2.end())
-                        .forward(3)
-                        .build();
-                Trajectory right5 = drive.trajectoryBuilder(right4.end())
-                        .strafeRight(10)
-                        .build();
+//                Trajectory rOffset1 = drive.trajectoryBuilder(right2.end())
+//                        .back(6)
+//                        .build();
+//                Trajectory rOffset2 = drive.trajectoryBuilder(rOffset1.end())
+//                        .strafeRight(3)
+//                        .build();
+//                Trajectory right4 = drive.trajectoryBuilder(right2.end())
+//                        .forward(3)
+//                        .build();
+//                Trajectory right5 = drive.trajectoryBuilder(right4.end())
+//                        .strafeRight(10)
+//                        .build();
                 drive.followTrajectory(right1);
                 drive.followTrajectory(right2);
-                drive.followTrajectory(rOffset1);
-                drive.followTrajectory(rOffset2);
-                drive.followTrajectory(right4);
-                drive.followTrajectory(right5);
+//                drive.followTrajectory(rOffset1);
+//                drive.followTrajectory(rOffset2);
+//                drive.followTrajectory(right4);
+//                drive.followTrajectory(right5);
 //                drive.turn(Math.toRadians(20));
 //                drive.followTrajectory(Roffset1);
                 //place prop on spike mark
                 placeOnSpike();
-                Trajectory right3 = drive.trajectoryBuilder(right5.end())
+                Trajectory right3 = drive.trajectoryBuilder(right2.end())
                         .lineToSplineHeading(new Pose2d(42, 50, Math.toRadians(115)))
                         .build();
                 drive.followTrajectory(right3);
-                drive.turn(Math.toRadians(-40));
-                Trajectory Roffset2 = drive.trajectoryBuilder(right3.end())
-                        .forward(10)
-                        .build();
-                drive.followTrajectory(Roffset2);
+//                drive.turn(Math.toRadians(-40));
+//                Trajectory Roffset2 = drive.trajectoryBuilder(right3.end())
+//                        .forward(10)
+//                        .build();
+//                drive.followTrajectory(Roffset2);
                 //place pixel on canvas
 //                placeOnCanvas();
 
