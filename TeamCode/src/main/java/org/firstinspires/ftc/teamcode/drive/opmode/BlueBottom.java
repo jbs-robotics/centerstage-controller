@@ -14,6 +14,10 @@ import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.tfod.TfodProcessor;
+import org.opencv.core.Point;
+import org.openftc.easyopencv.OpenCvCamera;
+import org.openftc.easyopencv.OpenCvCameraFactory;
+import org.openftc.easyopencv.OpenCvCameraRotation;
 
 import java.util.List;
 
@@ -23,37 +27,56 @@ import java.util.List;
 @Autonomous(group = "drive", name="Blue Bottom")
 public class BlueBottom extends LinearOpMode {
     private DcMotor lift = null;
-    private Servo intake = null;
-    boolean USE_WEBCAM = true;
-    TfodProcessor tfod;
     private int liftDelay = 1000;
+    private double intakeUp = 0.75, intakeDown = 0;
 
-    private VisionPortal visionPortal;
+    private OpenCvCamera webcam = null;
+    private ColorDetectorPipeline pipeline = null;
+    private Servo intake, lock = null;
 //    private Servo intakeServo = null;
     @Override
     public void runOpMode() throws InterruptedException {
+        int cameraMonitorViewId = hardwareMap.appContext.getResources()
+                .getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        webcam = OpenCvCameraFactory.getInstance()
+                .createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
+        pipeline = new ColorDetectorPipeline(telemetry, hardwareMap, 2);
+        webcam.setPipeline(pipeline);
+        webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
+        {
+            @Override
+            public void onOpened()
+            {
+                webcam.startStreaming(320,240, OpenCvCameraRotation.UPRIGHT);
+
+            }
+            @Override
+            public void onError(int errorCode) { telemetry.addData("Error", errorCode); }
+        });
+
+        pipeline.setRegionPoints(new Point(40, 140), new Point(80, 180), pipeline.getRegion2_pointA(), pipeline.getRegion2_pointB());
+        telemetry.addData("region1_pointA: ", pipeline.getRegion1_pointA());
+        telemetry.addData("region1_pointB: ", pipeline.getRegion1_pointB());
+        telemetry.addData("region2_pointA: ", pipeline.getRegion2_pointA());
+        telemetry.addData("region2_pointB: ", pipeline.getRegion2_pointB());
+        webcam.resumeViewport();
+
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         intake = hardwareMap.get(Servo.class, "intake");
-//        Servo rightServo = hardwareMap.get(Servo.class, "rightServo");
-
-        lift.setDirection(DcMotor.Direction.FORWARD);
+//        lock = hardwareMap.get(Servo.class, "lock");
         intake.setDirection(Servo.Direction.FORWARD);
-        //        rightServo.setDirection(Servo.Direction.FORWARD);
-
-//        drive.setPoseEstimate(new Pose2d(60, 10, Math.toRadians(180)));
-        initTfod();
+//        lock.setDirection(Servo.Direction.FORWARD);
+//        initTfod();
         lift = hardwareMap.get(DcMotor.class, "lift");
-//        intakeServo = hardwareMap.get(Servo.class, "intakeServo");
+        lift.setDirection(DcMotor.Direction.REVERSE);
+        intake.setPosition(intakeUp);
+        telemetry.addData(">", "Press Play to start op mode");
+
         waitForStart();
-//        telemetryTfod();
-        telemetry.update();
-//        List<Recognition> currentRecognitions = tfod.getRecognitions();
-//        String TFODPrediction = currentRecognitions.get(0).getLabel();
-        String TFODPrediction = "c";
-        if (isStopRequested()) return;
-        drive.setPoseEstimate(new Pose2d(new Vector2d(60, 10), Math.toRadians(180)));
+        char TFODPrediction = pipeline.getAnalysis();
+        drive.setPoseEstimate(new Pose2d(new Vector2d(-60, -37), Math.toRadians(180)));
         switch(TFODPrediction){
-            case "l": //left
+            case 'l': //left
                 Trajectory left1 = drive.trajectoryBuilder(new Pose2d(-60, -37, Math.toRadians(180)))
                         .lineToSplineHeading(new Pose2d(-35, -37, Math.toRadians(90)))
                         .build();
@@ -66,31 +89,34 @@ public class BlueBottom extends LinearOpMode {
                         .splineToConstantHeading(new Vector2d(-42, 50), Math.toRadians(90))
                         .build();
                 drive.followTrajectory(left2);
-                //place pixel on canvas
-                //TODO: figure out how much time is needed to lift the lift all the way up
+                drive.turn(Math.toRadians(180));
+                Trajectory left3 = drive.trajectoryBuilder(left2.end().plus(new Pose2d(0, 0, Math.toRadians(180))))
+                        .lineToConstantHeading(new Vector2d(-42, 53))
+                        .build();
+                drive.followTrajectory(left3);
                 break;
-            case "c": //center
+            case 'c': //center
                 Trajectory center1 = drive.trajectoryBuilder(new Pose2d(-60, -37, Math.toRadians(180)))
                         .forward(23)
                         .build();
                 drive.followTrajectory(center1);
                 //place pixel on spike mark
                 placeOnSpike();
-//                Trajectory center1 = drive.trajectoryBuilder(new Pose2d(-60, -37, Math.toRadians(180)))
-//                        .forward(27)
-//                        .build();
-//                drive.followTrajectory(center1);
-//                //place pixel on spike mark
-//                Trajectory center2 = drive.trajectoryBuilder(center1.end())
-//                        .splineToSplineHeading(new Pose2d(-60, -37, Math.toRadians(90)), Math.toRadians(360))
-//                        .splineToConstantHeading(new Vector2d(-55, -12), Math.toRadians(0))
-//                        .splineToConstantHeading(new Vector2d(-48, -12), Math.toRadians(0))
-//                        .splineToConstantHeading(new Vector2d(-35.5, 50), Math.toRadians(90))
-//                        .build();
-//                drive.followTrajectory(center2);
+                Trajectory center2 = drive.trajectoryBuilder(center1.end())
+                        .splineToConstantHeading(new Vector2d(35, -37), Math.toRadians(0))
+                        .splineToSplineHeading(new Pose2d(50, -37, Math.toRadians(90)), Math.toRadians(0))
+                        .splineToConstantHeading(new Vector2d(55, -12), Math.toRadians(180))
+                        .splineToConstantHeading(new Vector2d(35.5, 50), Math.toRadians(90))
+                        .build();
+                drive.followTrajectory(center2);
+                drive.turn(Math.toRadians(180));
+                Trajectory center3 = drive.trajectoryBuilder(center2.end().plus(new Pose2d(0, 0, Math.toRadians(180))))
+                        .lineToConstantHeading(new Vector2d(35.5, 53))
+                        .build();
+                drive.followTrajectory(center3);
                 //place pixel on canvas
                 break;
-            case "r": //right
+            case 'r': //right
                 Trajectory right1 = drive.trajectoryBuilder(new Pose2d(-60, -37, Math.toRadians(0)))
                         .lineToSplineHeading(new Pose2d(-35, -37, Math.toRadians(-90)))
                         .build();
@@ -98,11 +124,18 @@ public class BlueBottom extends LinearOpMode {
                         .splineToSplineHeading(new Pose2d(-60, -37, Math.toRadians(90)), Math.toRadians(0))
                         .splineToConstantHeading(new Vector2d(-55, -12), Math.toRadians(0))
                         .splineToConstantHeading(new Vector2d(-48, -12), Math.toRadians(0))
-                        .splineToConstantHeading(new Vector2d(-28, 50), Math.toRadians(90))
+                        .splineToConstantHeading(new Vector2d(-44.5, -12), Math.toRadians(0))
+                        .splineToConstantHeading(new Vector2d(-28, 45), Math.toRadians(0))
                         .build();
+
                 drive.followTrajectory(right1);
                 //place pixel on spike mark
                 drive.followTrajectory(right2);
+                Trajectory right3 = drive.trajectoryBuilder(right2.end().plus(new Pose2d(0, 0, Math.toRadians(180))))
+                        .lineToConstantHeading(new Vector2d(-28, 50))
+                        .build();
+                drive.turn(Math.toRadians(180));
+                drive.followTrajectory(right3);
                 //place pixel on canvas
                 break;
             default:
@@ -118,31 +151,6 @@ public class BlueBottom extends LinearOpMode {
 //                        .build()
 //        );
     }
-    private void initTfod() {
-        tfod = tfod.easyCreateWithDefaults();
-        /* non-default options for tfod
-        * TfodProcessor.Builder myTfodProcessorBuilder;
-          TfodProcessor myTfodProcessor;
-          // Create a new TFOD Processor Builder object.
-          myTfodProcessorBuilder = new TfodProcessor.Builder();
-
-          // Optional: set other custom features of the TFOD Processor (4 are shown here).
-          myTfodProcessorBuilder.setMaxNumRecognitions(10);  // Max. number of recognitions the network will return
-          myTfodProcessorBuilder.setUseObjectTracker(true);  // Whether to use the object tracker
-          myTfodProcessorBuilder.setTrackerMaxOverlap((float) 0.2);  // Max. % of box overlapped by another box at recognition time
-          myTfodProcessorBuilder.setTrackerMinSize(16);  // Min. size of object that the object tracker will track
-
-          // Create a TFOD Processor by calling build()
-          myTfodProcessor = myTfodProcessorBuilder.build();
-        * */
-        if (USE_WEBCAM){
-            visionPortal = VisionPortal.easyCreateWithDefaults(
-                    hardwareMap.get(WebcamName.class, "Webcam 1"), tfod);
-        } else {
-            visionPortal = VisionPortal.easyCreateWithDefaults(
-                    BuiltinCameraDirection.BACK, tfod);
-        }
-    }
     private void placeOnSpike(){
         lift.setPower(1);
         sleep(liftDelay/5);
@@ -150,22 +158,5 @@ public class BlueBottom extends LinearOpMode {
         intake.setPosition(0);
         sleep(4000);
         intake.setPosition(1);
-    }
-    private void telemetryTfod() {
-
-        List<Recognition> currentRecognitions = tfod.getRecognitions();
-        telemetry.addData("# Objects Detected", currentRecognitions.size());
-
-        // Step through the list of recognitions and display info for each one.
-        for (Recognition recognition : currentRecognitions) {
-            double x = (recognition.getLeft() + recognition.getRight()) / 2 ;
-            double y = (recognition.getTop()  + recognition.getBottom()) / 2 ;
-
-            telemetry.addData(""," ");
-            telemetry.addData("Image", "%s (%.0f %% Conf.)", recognition.getLabel(), recognition.getConfidence() * 100);
-            telemetry.addData("- Position", "%.0f / %.0f", x, y);
-            telemetry.addData("- Size", "%.0f x %.0f", recognition.getWidth(), recognition.getHeight());
-        }   // end for() loop
-
     }
 }

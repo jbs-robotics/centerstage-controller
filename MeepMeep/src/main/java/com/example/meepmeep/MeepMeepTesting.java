@@ -26,7 +26,9 @@ public class MeepMeepTesting {
                         drive.trajectorySequenceBuilder(new Pose2d(60, 10, Math.toRadians(180)))
                                 .lineToSplineHeading(new Pose2d(35, 10, Math.toRadians(-90)))
                                 //place pixel
-                                .lineToSplineHeading(new Pose2d(28, 50, Math.toRadians(90)))
+                                .lineToSplineHeading(new Pose2d(28, 45, Math.toRadians(90)))
+                                .turn(Math.toRadians(180))
+                                .back(5)
                                 //place other pixel on backdrop
                                 .build()
                 );
@@ -36,7 +38,9 @@ public class MeepMeepTesting {
                 .followTrajectorySequence(drive -> drive.trajectorySequenceBuilder(new Pose2d(60, 10, Math.toRadians(180)))
                         .forward(27)
                         //place pixel
-                        .lineToSplineHeading(new Pose2d(35.5, 50, Math.toRadians(90)))
+                        .lineToSplineHeading(new Pose2d(35.5, 45, Math.toRadians(90)))
+                        .turn(Math.toRadians(180))
+                        .back(5)
                         //place pixel on canvas
                         .build()
                 );
@@ -47,7 +51,9 @@ public class MeepMeepTesting {
                         .strafeRight(25)
                         .lineToSplineHeading(new Pose2d(30, 32, Math.toRadians(-90)))
                         //place pixel
-                        .lineToSplineHeading(new Pose2d(42, 50, Math.toRadians(90)))
+                        .lineToSplineHeading(new Pose2d(42, 45, Math.toRadians(90)))
+                        .turn(Math.toRadians(180))
+                        .back(5)
                         .build()
                 );
 
@@ -55,15 +61,19 @@ public class MeepMeepTesting {
         RoadRunnerBotEntity RBL = new DefaultBotBuilder(meepMeep)
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
                 .setConstraints(90, 90, Math.toRadians(180), Math.toRadians(180), 15)
-                //right
+                //left
                 .followTrajectorySequence(drive ->
                         drive.trajectorySequenceBuilder(new Pose2d(60, -37, Math.toRadians(180)))
                                 .lineToSplineHeading(new Pose2d(35, -37, Math.toRadians(-90)))
+
                                 //place pixel
                                 .splineToConstantHeading(new Vector2d(35, -33), Math.toRadians(0))
                                 .splineToSplineHeading(new Pose2d(50, -37, Math.toRadians(90)), Math.toRadians(0))
                                 .splineToConstantHeading(new Vector2d(55, -12), Math.toRadians(180))
-                                .splineToConstantHeading(new Vector2d(28, 50), Math.toRadians(90))
+                                .splineToConstantHeading(new Vector2d(44.5, -12), Math.toRadians(180))
+                                .splineToConstantHeading(new Vector2d(28, 45), Math.toRadians(180))
+                                .turn(Math.toRadians(180))
+                                .back(5)
                                 //place pixel on canvas
                                 .build()
                 );
@@ -76,20 +86,24 @@ public class MeepMeepTesting {
                 .splineToConstantHeading(new Vector2d(35, -37), Math.toRadians(0))
                 .splineToSplineHeading(new Pose2d(50, -37, Math.toRadians(90)), Math.toRadians(0))
                 .splineToConstantHeading(new Vector2d(55, -12), Math.toRadians(180))
-                .splineToConstantHeading(new Vector2d(35.5, 50), Math.toRadians(90))
+                .splineToConstantHeading(new Vector2d(35.5, 45), Math.toRadians(90))
+                .turn(Math.toRadians(180))
+                .back(5)
                 //place pixel on canvas
                 .build()
         );
         RoadRunnerBotEntity RBR = new DefaultBotBuilder(meepMeep)
         .setConstraints(90, 90, Math.toRadians(180), Math.toRadians(180), 15)
-        //left
+        //right
         .followTrajectorySequence(drive -> drive.trajectorySequenceBuilder(new Pose2d(60, -37, Math.toRadians(180)))
-                .lineToSplineHeading(new Pose2d(35, -37, Math.toRadians(90)))
+                .lineToSplineHeading(new Pose2d(35, -33, Math.toRadians(90)))
                 //place pixel
-                .splineToConstantHeading(new Vector2d(50, -37), Math.toRadians(0))
+                .splineToConstantHeading(new Vector2d(53, -37), Math.toRadians(0))
                 .splineToConstantHeading(new Vector2d(53, -12), Math.toRadians(180))
                 .splineToConstantHeading(new Vector2d(48, -12), Math.toRadians(180))
-                .splineToConstantHeading(new Vector2d(42, 50), Math.toRadians(90))
+                .splineToConstantHeading(new Vector2d(42, 45), Math.toRadians(90))
+                .turn(Math.toRadians(180))
+                .back(5)
                 //place pixel on canvas
                 .build()
         );
@@ -103,7 +117,9 @@ public class MeepMeepTesting {
                         drive.trajectorySequenceBuilder(new Pose2d(-60, 10, Math.toRadians(0)))
                                 .lineToSplineHeading(new Pose2d(-35, 10, Math.toRadians(-90)))
                                 //place pixel
-                                .lineToSplineHeading(new Pose2d(-28, 50, Math.toRadians(90)))
+                                .lineToSplineHeading(new Pose2d(-28, 45, Math.toRadians(90)))
+                                .turn(Math.toRadians(180))
+                                .back(5)
                                 //place other pixel on backdrop
                                 .build()
                 );
@@ -113,7 +129,9 @@ public class MeepMeepTesting {
                 .followTrajectorySequence(drive -> drive.trajectorySequenceBuilder(new Pose2d(-60, 10, Math.toRadians(0)))
                         .forward(27)
                         //place pixel
-                        .lineToSplineHeading(new Pose2d(-35.5, 50, Math.toRadians(90)))
+                        .lineToSplineHeading(new Pose2d(-35.5, 45, Math.toRadians(90)))
+                        .turn(Math.toRadians(180))
+                        .back(5)
                         //place pixel on canvas
                         .build()
                 );
@@ -124,10 +142,13 @@ public class MeepMeepTesting {
                         .strafeLeft(25)
                         .lineToSplineHeading(new Pose2d(-30, 32, Math.toRadians(-90)))
                         //place pixel
-                        .lineToSplineHeading(new Pose2d(-42, 50, Math.toRadians(90)))
+                        .lineToSplineHeading(new Pose2d(-42, 45, Math.toRadians(90)))
+                        .turn(Math.toRadians(180))
+                        .back(5)
                         .build()
                 );
         //Blue Bottom
+        //TODO: fix this
         RoadRunnerBotEntity BBR = new DefaultBotBuilder(meepMeep)
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
                 .setConstraints(90, 90, Math.toRadians(180), Math.toRadians(180), 15)
@@ -139,7 +160,10 @@ public class MeepMeepTesting {
                                 .splineToSplineHeading(new Pose2d(-60, -37, Math.toRadians(90)), Math.toRadians(0))
                                 .splineToConstantHeading(new Vector2d(-55, -12), Math.toRadians(0))
                                 .splineToConstantHeading(new Vector2d(-48, -12), Math.toRadians(0))
-                                .splineToConstantHeading(new Vector2d(-28, 50), Math.toRadians(90))
+                                .splineToConstantHeading(new Vector2d(-44.5, -12), Math.toRadians(0))
+                                .splineToConstantHeading(new Vector2d(-28, 45), Math.toRadians(0))
+                                .turn(Math.toRadians(180))
+                                .back(5)
                                 //place pixel on canvas
                                 .build()
                 );
@@ -152,7 +176,9 @@ public class MeepMeepTesting {
                         .splineToSplineHeading(new Pose2d(-60, -37, Math.toRadians(90)), Math.toRadians(360))
                         .splineToConstantHeading(new Vector2d(-55, -12), Math.toRadians(0))
                         .splineToConstantHeading(new Vector2d(-48, -12), Math.toRadians(0))
-                        .splineToConstantHeading(new Vector2d(-35.5, 50), Math.toRadians(90))
+                        .splineToConstantHeading(new Vector2d(-35.5, 45), Math.toRadians(90))
+                        .turn(Math.toRadians(180))
+                        .back(5)
                         //place pixel on canvas
                         .build()
                 );
@@ -160,12 +186,14 @@ public class MeepMeepTesting {
                 .setConstraints(90, 90, Math.toRadians(180), Math.toRadians(180), 15)
                 //left
                 .followTrajectorySequence(drive -> drive.trajectorySequenceBuilder(new Pose2d(-60, -37, Math.toRadians(0)))
-                        .lineToSplineHeading(new Pose2d(-35, -37, Math.toRadians(90)))
+                        .lineToSplineHeading(new Pose2d(-35, -33, Math.toRadians(90)))
                         //place pixel
                         .splineToConstantHeading(new Vector2d(-60, -37), Math.toRadians(360))
                         .splineToConstantHeading(new Vector2d(-55, -12), Math.toRadians(0))
                         .splineToConstantHeading(new Vector2d(-48, -12), Math.toRadians(0))
-                        .splineToConstantHeading(new Vector2d(-42, 50), Math.toRadians(90))
+                        .splineToConstantHeading(new Vector2d(-42, 45), Math.toRadians(90))
+                        .turn(Math.toRadians(180))
+                        .back(5)
                         //place pixel on canvas
                         .build()
                 );
@@ -188,8 +216,8 @@ public class MeepMeepTesting {
 //                .addEntity(RTL)
 //                .addEntity(RTR)
 //                .addEntity(RBC)
+//                .addEntity(RBR)
                 .addEntity(RBR)
-//                .addEntity(RBL)
                 .start();
     }
 }
