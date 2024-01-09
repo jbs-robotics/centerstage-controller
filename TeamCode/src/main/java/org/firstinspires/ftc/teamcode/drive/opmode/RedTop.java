@@ -109,10 +109,12 @@ public class RedTop extends LinearOpMode {
                         .strafeRight(27)
                         .build();
                 Trajectory right2 = drive.trajectoryBuilder(right1.end())
-                        .lineToSplineHeading(new Pose2d(30, 39, Math.toRadians(-90)))
+                        .lineToSplineHeading(new Pose2d(30, 36, Math.toRadians(-90)))
                         .build();
                 drive.followTrajectory(right1);
                 drive.followTrajectory(right2);
+
+
                 //place prop on spike mark
                 placeOnSpike();
 
@@ -138,7 +140,7 @@ public class RedTop extends LinearOpMode {
         lift.setPower(1);
         sleep(liftDelay/8);
         lift.setPower(.25);
-        intake.setPosition(.5);
+        intake.setPosition(.7);
         sleep(1000);
         intake.setPosition(.3);
 //        intake.setPosition(intakeDown);

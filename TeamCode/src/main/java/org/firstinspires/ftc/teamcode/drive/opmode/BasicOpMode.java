@@ -59,7 +59,7 @@ public class BasicOpMode extends LinearOpMode {
     private int pullupUp = 12690, pullupDown = 0;
     private double servoUpLimit = 0.75;
     private ElapsedTime runtime = new ElapsedTime();
-    private DcMotor leftFront, leftBack, rightFront, rightBack, lift, pullupMotor, urchin = null;
+    private DcMotor leftFront, leftBack, rightFront, rightBack, lift, pullupMotor, urchin = null, droneLauncher = null;
     private Servo intakeServo = null;
     private CRServo hookServo = null;
     private double currentServoPos = 0.75, sensitivity = 1, driveSensitivity = .75, brakingOffset = -0.1;
@@ -87,6 +87,11 @@ public class BasicOpMode extends LinearOpMode {
         pullupMotor = hardwareMap.get(DcMotor.class, "pullup");
 //        hookServo = hardwareMap.get(CRServo.class, "hookServo");
         intakeServo = hardwareMap.get(Servo.class, "intake");
+
+        // Launcher Motors
+//        droneLauncher = hardwareMap.get(DcMotor.class, "droneLauncher");
+
+
         // To drive forward, most robots need the motor on on e side to be reversed, because the axles point in opposite directions.
         // Pushing the left stick forward MUST make robot go forward. So adjust these two lines based on your first test drive.
         // Note: The settings here assume direct drive on left and right wheels.  Gear Reduction or 90 Deg drives may require direction flips
@@ -139,6 +144,7 @@ public class BasicOpMode extends LinearOpMode {
             //gamepad 2(lift control)
             double intakePos = Range.clip(intake, -sensitivity/180, sensitivity/180);
             double liftPower = Range.clip(liftControl, -sensitivity, sensitivity);
+            boolean launch = gamepad2.right_bumper;
 
             // Send calculated power to wheels
             leftFront.setPower(lfPower);
@@ -173,7 +179,12 @@ public class BasicOpMode extends LinearOpMode {
                 pullupMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 pullupMotor.setPower(1);
             }
-
+            if (launch){
+                //TODO: Test This
+                droneLauncher.setPower(1);
+                sleep(1000);
+                droneLauncher.setPower(0);
+            }
             telemetry.addData("Current Intake Servo Pos: ", currentServoPos);
             telemetry.addData("Sensitivity: ", sensitivity);
             telemetry.addData("Drive Sensitivity: ", driveSensitivity);
