@@ -24,14 +24,26 @@ public class RedTop extends LinearOpMode {
     private DcMotor lift = null;
     private OpenCvCamera webcam = null;
     private ColorDetectorPipeline pipeline = null;
-    private Servo intake, lock = null;
+    private Servo intake = null, angleServo = null, claw = null;
     private int liftDelay = 1000;
-    private double intakeUp = 0.75, intakeDown = 0;
+    private double intakeUp = 0.7, intakeDown = 0, clawUp = 0.5, clawDown = 0.3, angleServoUp = .5, angleServoDown = 0.3;
 
     private VisionPortal visionPortal;
 //    private Servo intakeServo = null;
     @Override
     public void runOpMode() throws InterruptedException {
+        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+        intake = hardwareMap.get(Servo.class, "intake");
+        intake.setDirection(Servo.Direction.FORWARD);
+        angleServo = hardwareMap.get(Servo.class, "angleServo");
+        claw = hardwareMap.get(Servo.class, "claw");
+        lift = hardwareMap.get(DcMotor.class, "lift");
+        lift.setDirection(DcMotor.Direction.REVERSE);
+        intake.setPosition(intakeUp);
+//        claw.setDirection(Servo.Direction.FORWARD);
+//        angleServo.setDirection(Servo.Direction.FORWARD);
+        claw.setPosition(clawDown);
+
         int cameraMonitorViewId = hardwareMap.appContext.getResources()
                 .getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         webcam = OpenCvCameraFactory.getInstance()
@@ -44,21 +56,11 @@ public class RedTop extends LinearOpMode {
             public void onOpened()
             {
                 webcam.startStreaming(320,240, OpenCvCameraRotation.UPRIGHT);
-
             }
             @Override
             public void onError(int errorCode) { telemetry.addData("Error", errorCode); }
         });
         webcam.resumeViewport();
-
-        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
-        intake = hardwareMap.get(Servo.class, "intake");
-        intake.setDirection(Servo.Direction.FORWARD);
-//        initTfod();
-        lift = hardwareMap.get(DcMotor.class, "lift");
-        lift.setDirection(DcMotor.Direction.REVERSE);
-        intake.setPosition(intakeUp);
-//        telemetry.addData("prediction: ", pipeline.getAnalysis());
         telemetry.addData(">","Ready to start");
         waitForStart();
         char TFODPrediction = pipeline.getAnalysis();
@@ -68,7 +70,7 @@ public class RedTop extends LinearOpMode {
         switch(TFODPrediction) {
             case 'l': //left
                 Trajectory left1 = drive.trajectoryBuilder(new Pose2d(60, 10, Math.toRadians(180)))
-                        .lineToLinearHeading(new Pose2d(new Vector2d(19, 12), Math.toRadians(-90)))
+                        .lineToLinearHeading(new Pose2d(new Vector2d(20, 14), Math.toRadians(-90)))
                         .build();
                 drive.followTrajectory(left1);
                 //place prop on spike mark
@@ -78,16 +80,16 @@ public class RedTop extends LinearOpMode {
                         .build();
                 drive.followTrajectory(left2);
                 Trajectory left3 = drive.trajectoryBuilder(left2.end().plus(new Pose2d(0, 0, Math.toRadians(180))))
-                        .lineToConstantHeading(new Vector2d(22, 53))
+                        .lineToConstantHeading(new Vector2d(25, 53))
                         .build();
                 drive.turn(Math.toRadians(180));
                 drive.followTrajectory(left3);
                 //place pixel on canvas
-//                placeOnCanvas();
+                placeOnCanvas();
                 break;
             case 'c': //center
                 Trajectory center1 = drive.trajectoryBuilder(new Pose2d(60, 10, Math.toRadians(180)))
-                        .forward(22)
+                        .forward(23)
                         .build();
                 drive.followTrajectory(center1);
                 //place prop on spike mark
@@ -102,7 +104,7 @@ public class RedTop extends LinearOpMode {
                 drive.turn(Math.toRadians(180));
                 drive.followTrajectory(center3);
                 //place pixel on canvas
-//                placeOnCanvas();
+                placeOnCanvas();
                 break;
             case 'r': //right
                 Trajectory right1 = drive.trajectoryBuilder(new Pose2d(60, 10, Math.toRadians(180)))
@@ -128,7 +130,7 @@ public class RedTop extends LinearOpMode {
                 drive.turn(Math.toRadians(180));
                 drive.followTrajectory(right4);
                 //place pixel on canvas
-//                placeOnCanvas();
+                placeOnCanvas();
 
                 break;
             default:
@@ -140,7 +142,7 @@ public class RedTop extends LinearOpMode {
         lift.setPower(1);
         sleep(liftDelay/8);
         lift.setPower(.25);
-        intake.setPosition(.7);
+        intake.setPosition(.5);
         sleep(1000);
         intake.setPosition(.3);
 //        intake.setPosition(intakeDown);
@@ -148,12 +150,9 @@ public class RedTop extends LinearOpMode {
         intake.setPosition(intakeUp);
     }
     private void placeOnCanvas(){
-        lift.setPower(1);
-        sleep(liftDelay/4);
-        lift.setPower(0);
-//        lock.setPosition(1);
-        intake.setPosition(intakeUp);
-
+        angleServo.setPosition(angleServoDown);
+        sleep(3000);
+        claw.setPosition(clawUp);
     }
 }
 /* non-default options for tfod
