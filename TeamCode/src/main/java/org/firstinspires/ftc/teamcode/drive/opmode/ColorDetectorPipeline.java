@@ -15,7 +15,6 @@ import org.opencv.core.Scalar;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvPipeline;
-import org.tensorflow.lite.support.common.FileUtil;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -77,7 +76,7 @@ public class ColorDetectorPipeline extends OpenCvPipeline {
     private double[] region1Average = new double[3];
     private double[] region2Average = new double[3];
     private char prediction = 'c';
-    private double threshold = 180, percentageThreshold = 0.5, percentRed1, percentRed2, percentBlue1, percentBlue2;
+    private double threshold = 180, percentageThreshold = 0.47, percentRed1, percentRed2, percentBlue1, percentBlue2;
     @Override
     public Mat processFrame(Mat input) {
         mat = input;

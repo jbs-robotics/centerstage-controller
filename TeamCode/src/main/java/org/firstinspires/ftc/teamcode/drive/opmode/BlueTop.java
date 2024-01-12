@@ -54,6 +54,8 @@ public class BlueTop extends LinearOpMode {
         telemetry.addData("region1_pointB: ", pipeline.getRegion1_pointB());
         telemetry.addData("region2_pointA: ", pipeline.getRegion2_pointA());
         telemetry.addData("region2_pointB: ", pipeline.getRegion2_pointB());
+        telemetry.addData("PercentageLeft: ", pipeline.getPercentBlue1());
+        telemetry.addData("PercentageRight: ", pipeline.getPercentBlue2());
         webcam.resumeViewport();
 
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
@@ -75,14 +77,14 @@ public class BlueTop extends LinearOpMode {
         switch(TFODPrediction) {
             case 'r': //right
                 Trajectory right1 = drive.trajectoryBuilder(drive.getPoseEstimate())
-                        .lineToLinearHeading(new Pose2d(new Vector2d(-26, 14), Math.toRadians(-90)))
+                        .lineToLinearHeading(new Pose2d(new Vector2d(-26, 15), Math.toRadians(-90)))
                         .build();
                 drive.followTrajectory(right1);
                 Trajectory right1_2_1 = drive.trajectoryBuilder(right1.end())
-                        .strafeRight(3)
+                        .strafeRight(6)
                         .build();
                 Trajectory right1_2 = drive.trajectoryBuilder(right1_2_1.end())
-                        .forward(12)
+                        .forward(15)
                         .build();
                 Trajectory right1_3 = drive.trajectoryBuilder(right1_2.end())
                         .back(12)
@@ -93,11 +95,11 @@ public class BlueTop extends LinearOpMode {
                 placeOnSpike();
 
                 Trajectory right2 = drive.trajectoryBuilder(right1.end())
-                        .lineToLinearHeading(new Pose2d(new Vector2d(-18, 50), Math.toRadians(90)))
+                        .lineToLinearHeading(new Pose2d(new Vector2d(-24, 50), Math.toRadians(90)))
                         .build();
                 drive.followTrajectory(right2);
                 Trajectory right3 = drive.trajectoryBuilder(right2.end().plus(new Pose2d(0, 0, Math.toRadians(180))))
-                        .lineToConstantHeading(new Vector2d(-26, 54))
+                        .lineToConstantHeading(new Vector2d(-24, 54))
                         .build();
                 drive.turn(Math.toRadians(180));
                 drive.followTrajectory(right3);
@@ -124,7 +126,7 @@ public class BlueTop extends LinearOpMode {
                 drive.followTrajectory(center1_5);
                 drive.followTrajectory(center2);
                 Trajectory center3 = drive.trajectoryBuilder(center2.end().plus(new Pose2d(0, 0, Math.toRadians(180))))
-                        .lineToConstantHeading(new Vector2d(-36.5, 53.5))
+                        .lineToConstantHeading(new Vector2d(-37, 53.5))
                         .build();
                 drive.turn(Math.toRadians(180));
                 drive.followTrajectory(center3);
@@ -140,10 +142,18 @@ public class BlueTop extends LinearOpMode {
                         .build();
                 drive.followTrajectory(left1);
                 drive.followTrajectory(left2);
+                Trajectory left2_1 = drive.trajectoryBuilder(left2.end())
+                        .forward(12)
+                        .build();
+                Trajectory left2_2 = drive.trajectoryBuilder(left2_1.end())
+                        .back(12)
+                        .build();
+                drive.followTrajectory(left2_1);
+                drive.followTrajectory(left2_2);
                 //place prop on spike mark
                 placeOnSpike();
-                Trajectory left3 = drive.trajectoryBuilder(left2.end())
-                        .lineToSplineHeading(new Pose2d(-42, 50, Math.toRadians(115)))
+                Trajectory left3 = drive.trajectoryBuilder(left2_2.end())
+                        .lineToSplineHeading(new Pose2d(-42, 50, Math.toRadians(90)))
                         .build();
                 drive.followTrajectory(left3);
                 Trajectory left4 = drive.trajectoryBuilder(left3.end().plus(new Pose2d(0, 0, Math.toRadians(180))))

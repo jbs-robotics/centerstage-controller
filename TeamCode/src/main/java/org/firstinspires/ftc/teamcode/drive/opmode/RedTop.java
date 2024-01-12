@@ -75,16 +75,20 @@ public class RedTop extends LinearOpMode {
                         .strafeLeft(3)
                         .build();
                 Trajectory left1_2 = drive.trajectoryBuilder(left1_2_1.end())
-                        .forward(12)
+                        .forward(18)
                         .build();
                 Trajectory left1_3 = drive.trajectoryBuilder(left1_2.end())
-                        .back(12)
+                        .back(16)
                         .build();
+                Trajectory left1_4 = drive.trajectoryBuilder(left1_3.end())
+                    .strafeRight(4)
+                    .build();
                 drive.followTrajectory(left1_2);
                 drive.followTrajectory(left1_3);
+                drive.followTrajectory(left1_4);
                 //place prop on spike mark
                 placeOnSpike();
-                Trajectory left2 = drive.trajectoryBuilder(left1_3.end())
+                Trajectory left2 = drive.trajectoryBuilder(left1_4.end())
                         .lineToLinearHeading(new Pose2d(new Vector2d(18, 50), Math.toRadians(90)))
                         .build();
                 drive.followTrajectory(left2);
@@ -102,7 +106,7 @@ public class RedTop extends LinearOpMode {
                         .build();
                 drive.followTrajectory(center1);
                 Trajectory center1_2 = drive.trajectoryBuilder(center1.end())
-                        .back(12)
+                        .back(11)
                         .build();
                 drive.followTrajectory(center1_2);
                 //place prop on spike mark
@@ -117,7 +121,7 @@ public class RedTop extends LinearOpMode {
                 drive.followTrajectory(center2);
 
                 Trajectory center3 = drive.trajectoryBuilder(center2.end().plus(new Pose2d(0, 0, Math.toRadians(180))))
-                        .lineToConstantHeading(new Vector2d(36, 53.5))
+                        .lineToConstantHeading(new Vector2d(34, 53.5))
                         .build();
                 drive.turn(Math.toRadians(180));
                 drive.followTrajectory(center3);
