@@ -23,11 +23,11 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 public class BlueTop extends LinearOpMode {
     private DcMotor lift = null;
     private int liftDelay = 1000;
-    private double intakeUp = 0.75, intakeDown = 0;
 
     private OpenCvCamera webcam = null;
     private ColorDetectorPipeline pipeline = null;
-    private Servo intake, lock = null;
+    private Servo intake = null, angleServo = null, claw = null;
+    private double intakeUp = 0.7, intakeDown = 0, clawUp = 0.5, clawDown = 0.4, angleServoUp = .5, angleServoDown = 0.43;
     @Override
     public void runOpMode() throws InterruptedException {
 
@@ -58,31 +58,37 @@ public class BlueTop extends LinearOpMode {
 
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         intake = hardwareMap.get(Servo.class, "intake");
-//        lock = hardwareMap.get(Servo.class, "lock");
         intake.setDirection(Servo.Direction.FORWARD);
-//        lock.setDirection(Servo.Direction.FORWARD);
-//        initTfod();
+        angleServo = hardwareMap.get(Servo.class, "angleServo");
+        claw = hardwareMap.get(Servo.class, "claw");
         lift = hardwareMap.get(DcMotor.class, "lift");
         lift.setDirection(DcMotor.Direction.REVERSE);
         intake.setPosition(intakeUp);
-        telemetry.addData(">", "Press Play to start op mode");
+        claw.setPosition(clawDown);
 
+        telemetry.addData(">", "Press Play to start op mode");
         waitForStart();
         char TFODPrediction = pipeline.getAnalysis();
-//        telemetryTfod();
-//        telemetry.update();
-//        List<Recognition> currentRecognitions = tfod.getRecognitions();
-//        String TFODPrediction = currentRecognitions.get(0).getLabel();
-//        String TFODPrediction = "c";
         if (isStopRequested()) return;
         drive.setPoseEstimate(new Pose2d(new Vector2d(-60, 10), Math.toRadians(0)));
 
         switch(TFODPrediction) {
             case 'r': //right
                 Trajectory right1 = drive.trajectoryBuilder(drive.getPoseEstimate())
-                        .lineToLinearHeading(new Pose2d(new Vector2d(-25, 5), Math.toRadians(-90)))
+                        .lineToLinearHeading(new Pose2d(new Vector2d(-26, 14), Math.toRadians(-90)))
                         .build();
                 drive.followTrajectory(right1);
+                Trajectory right1_2_1 = drive.trajectoryBuilder(right1.end())
+                        .strafeRight(3)
+                        .build();
+                Trajectory right1_2 = drive.trajectoryBuilder(right1_2_1.end())
+                        .forward(12)
+                        .build();
+                Trajectory right1_3 = drive.trajectoryBuilder(right1_2.end())
+                        .back(12)
+                        .build();
+                drive.followTrajectory(right1_2);
+                drive.followTrajectory(right1_3);
                 //place prop on spike mark
                 placeOnSpike();
 
@@ -90,53 +96,63 @@ public class BlueTop extends LinearOpMode {
                         .lineToLinearHeading(new Pose2d(new Vector2d(-18, 50), Math.toRadians(90)))
                         .build();
                 drive.followTrajectory(right2);
+                Trajectory right3 = drive.trajectoryBuilder(right2.end().plus(new Pose2d(0, 0, Math.toRadians(180))))
+                        .lineToConstantHeading(new Vector2d(-26, 54))
+                        .build();
+                drive.turn(Math.toRadians(180));
+                drive.followTrajectory(right3);
                 //place pixel on canvas
-//                placeOnCanvas();
-//                lift.setPower(1);
-//                sleep(liftDelay);
-//                lift.setPower(0);
+                placeOnCanvas();
                 break;
             case 'c': //center
                 Trajectory center1 = drive.trajectoryBuilder(drive.getPoseEstimate())
-                        .forward(22)
+                        .forward(35)
                         .build();
                 drive.followTrajectory(center1);
-
+                Trajectory center1_2 = drive.trajectoryBuilder(center1.end())
+                        .back(12)
+                        .build();
+                drive.followTrajectory(center1_2);
                 //place prop on spike mark
                 placeOnSpike();
-                Trajectory center2 = drive.trajectoryBuilder(center1.end())
+                Trajectory center1_5 = drive.trajectoryBuilder(center1_2.end())
+                        .back(5)
+                        .build();
+                Trajectory center2 = drive.trajectoryBuilder(center1_5.end())
                         .lineToLinearHeading(new Pose2d(-35.5, 50, Math.toRadians(90)))
                         .build();
+                drive.followTrajectory(center1_5);
                 drive.followTrajectory(center2);
+                Trajectory center3 = drive.trajectoryBuilder(center2.end().plus(new Pose2d(0, 0, Math.toRadians(180))))
+                        .lineToConstantHeading(new Vector2d(-36, 53.5))
+                        .build();
+                drive.turn(Math.toRadians(180));
+                drive.followTrajectory(center3);
                 //place pixel on canvas
-//                placeOnCanvas();
-//                lift.setPower(1);
-//                sleep(liftDelay);
-//                lift.setPower(0);
+                placeOnCanvas();
                 break;
             case 'l': //left
                 Trajectory left1 = drive.trajectoryBuilder(drive.getPoseEstimate())
                         .strafeLeft(27)
                         .build();
                 Trajectory left2 = drive.trajectoryBuilder(left1.end())
-                        .lineToSplineHeading(new Pose2d(-30, 32, Math.toRadians(-90)))
+                        .lineToSplineHeading(new Pose2d(-30, 36, Math.toRadians(-90)))
                         .build();
-//                Trajectory lOffset2 = drive.trajectoryBuilder(rOffset1.end())
-//                        .strafeLeft(10)
-//                        .build();
                 drive.followTrajectory(left1);
                 drive.followTrajectory(left2);
                 //place prop on spike mark
                 placeOnSpike();
-                Trajectory left5 = drive.trajectoryBuilder(left2.end())
+                Trajectory left3 = drive.trajectoryBuilder(left2.end())
                         .lineToSplineHeading(new Pose2d(-42, 50, Math.toRadians(115)))
                         .build();
-                drive.followTrajectory(left5);
+                drive.followTrajectory(left3);
+                Trajectory left4 = drive.trajectoryBuilder(left3.end().plus(new Pose2d(0, 0, Math.toRadians(180))))
+                        .lineToConstantHeading(new Vector2d(-42, 54))
+                        .build();
+                drive.turn(Math.toRadians(180));
+                drive.followTrajectory(left4);
                 //place pixel on canvas
-//                placeOnCanvas();
-//                lift.setPower(1);
-//                sleep(liftDelay);
-//                lift.setPower(0);
+                placeOnCanvas();
                 break;
             default:
                 telemetry.addData("wtf how", "no but actually how");
@@ -155,11 +171,9 @@ public class BlueTop extends LinearOpMode {
         intake.setPosition(intakeUp);
     }
     private void placeOnCanvas(){
-        lift.setPower(1);
-        sleep(liftDelay/4);
-        lift.setPower(0);
-//        lock.setPosition(1);
-        intake.setPosition(intakeUp);
+        angleServo.setPosition(angleServoDown);
+        sleep(3500);
+        claw.setPosition(clawUp);
 
     }
 }

@@ -38,6 +38,7 @@ public class MeepMeepTesting {
                 .followTrajectorySequence(drive -> drive.trajectorySequenceBuilder(new Pose2d(60, 10, Math.toRadians(180)))
                         .forward(27)
                         //place pixel
+                        .back(5)
                         .lineToSplineHeading(new Pose2d(35.5, 45, Math.toRadians(90)))
                         .turn(Math.toRadians(180))
                         .back(5)
@@ -211,13 +212,13 @@ public class MeepMeepTesting {
 //                .addEntity(BTR)
 //                .addEntity(BBC)
 //                .addEntity(BBL)
-                .addEntity(BBR)
-//                .addEntity(RTC)
+//                .addEntity(BBR)
+                .addEntity(RTC)
 //                .addEntity(RTL)
 //                .addEntity(RTR)
 //                .addEntity(RBC)
 //                .addEntity(RBR)
-                .addEntity(RBR)
+//                .addEntity(RBR)
                 .start();
     }
 }
