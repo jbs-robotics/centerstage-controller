@@ -124,7 +124,7 @@ public class BlueTop extends LinearOpMode {
                 drive.followTrajectory(center1_5);
                 drive.followTrajectory(center2);
                 Trajectory center3 = drive.trajectoryBuilder(center2.end().plus(new Pose2d(0, 0, Math.toRadians(180))))
-                        .lineToConstantHeading(new Vector2d(-36, 53.5))
+                        .lineToConstantHeading(new Vector2d(-36.5, 53.5))
                         .build();
                 drive.turn(Math.toRadians(180));
                 drive.followTrajectory(center3);
@@ -136,7 +136,7 @@ public class BlueTop extends LinearOpMode {
                         .strafeLeft(27)
                         .build();
                 Trajectory left2 = drive.trajectoryBuilder(left1.end())
-                        .lineToSplineHeading(new Pose2d(-30, 36, Math.toRadians(-90)))
+                        .lineToSplineHeading(new Pose2d(-30, 39, Math.toRadians(-90)))
                         .build();
                 drive.followTrajectory(left1);
                 drive.followTrajectory(left2);
