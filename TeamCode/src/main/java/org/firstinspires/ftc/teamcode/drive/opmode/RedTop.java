@@ -5,12 +5,14 @@ import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.vision.VisionPortal;
+import org.opencv.core.Point;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvCameraFactory;
@@ -24,9 +26,10 @@ public class RedTop extends LinearOpMode {
     private DcMotor lift = null;
     private OpenCvCamera webcam = null;
     private ColorDetectorPipeline pipeline = null;
-    private Servo intake = null, angleServo = null, claw = null;
+    private Servo intake = null,  claw = null;
+    private CRServo angleServo = null;
     private int liftDelay = 1000;
-    private double intakeUp = 0.7, intakeDown = 0, clawUp = 0.5, clawDown = 0.4, angleServoUp = .5, angleServoDown = 0.43;
+    private double intakeUp = 0.7, intakeDown = 0, clawUp = 0.5, clawDown = 0.4, angleServoUp = .48, angleServoDown = 0.43;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -47,11 +50,12 @@ public class RedTop extends LinearOpMode {
             public void onError(int errorCode) { telemetry.addData("Error", errorCode); }
         });
         webcam.resumeViewport();
+        pipeline.setRegionPoints(new Point(40, 140), new Point(80, 180), pipeline.getRegion2_pointA(), pipeline.getRegion2_pointB());
 
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         intake = hardwareMap.get(Servo.class, "intake");
         intake.setDirection(Servo.Direction.FORWARD);
-        angleServo = hardwareMap.get(Servo.class, "angleServo");
+        angleServo = hardwareMap.get(CRServo.class, "angleServo");
         claw = hardwareMap.get(Servo.class, "claw");
         lift = hardwareMap.get(DcMotor.class, "lift");
         lift.setDirection(DcMotor.Direction.REVERSE);
@@ -121,7 +125,7 @@ public class RedTop extends LinearOpMode {
                 drive.followTrajectory(center2);
 
                 Trajectory center3 = drive.trajectoryBuilder(center2.end().plus(new Pose2d(0, 0, Math.toRadians(180))))
-                        .lineToConstantHeading(new Vector2d(34, 53.5))
+                        .lineToConstantHeading(new Vector2d(32.5, 53.5))
                         .build();
                 drive.turn(Math.toRadians(180));
                 drive.followTrajectory(center3);
@@ -161,6 +165,7 @@ public class RedTop extends LinearOpMode {
         }
     }
     private void placeOnSpike(){
+        sleep(1000);
         lift.setPower(1);
         sleep(liftDelay/8);
         lift.setPower(.25);
@@ -172,9 +177,14 @@ public class RedTop extends LinearOpMode {
         intake.setPosition(intakeUp);
     }
     private void placeOnCanvas(){
-        angleServo.setPosition(angleServoDown);
+        angleServo.setPower(-.2);
+        sleep(2000);
+        angleServo.setPower(0);
         sleep(3500);
         claw.setPosition(clawUp);
+        sleep(1000);
+
+//        angleServo.setPosition(angleServoUp);
     }
 }
 /* non-default options for tfod

@@ -6,6 +6,7 @@ import com.acmerobotics.roadrunner.geometry.Vector2d;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -26,8 +27,9 @@ public class BlueTop extends LinearOpMode {
 
     private OpenCvCamera webcam = null;
     private ColorDetectorPipeline pipeline = null;
-    private Servo intake = null, angleServo = null, claw = null;
-    private double intakeUp = 0.7, intakeDown = 0, clawUp = 0.5, clawDown = 0.4, angleServoUp = .5, angleServoDown = 0.43;
+    private Servo intake = null, claw = null;
+    private CRServo angleServo = null;
+    private double intakeUp = 0.7, intakeDown = 0, clawUp = 0.5, clawDown = 0.4, angleServoUp = .1, angleServoDown = 0.43;
     @Override
     public void runOpMode() throws InterruptedException {
 
@@ -61,7 +63,7 @@ public class BlueTop extends LinearOpMode {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         intake = hardwareMap.get(Servo.class, "intake");
         intake.setDirection(Servo.Direction.FORWARD);
-        angleServo = hardwareMap.get(Servo.class, "angleServo");
+        angleServo = hardwareMap.get(CRServo.class, "angleServo");
         claw = hardwareMap.get(Servo.class, "claw");
         lift = hardwareMap.get(DcMotor.class, "lift");
         lift.setDirection(DcMotor.Direction.REVERSE);
@@ -93,9 +95,12 @@ public class BlueTop extends LinearOpMode {
                 drive.followTrajectory(right1_3);
                 //place prop on spike mark
                 placeOnSpike();
-
-                Trajectory right2 = drive.trajectoryBuilder(right1.end())
-                        .lineToLinearHeading(new Pose2d(new Vector2d(-24, 50), Math.toRadians(90)))
+                Trajectory right1_4 = drive.trajectoryBuilder(right1_3.end())
+                        .back(10)
+                        .build();
+                drive.followTrajectory(right1_4);
+                Trajectory right2 = drive.trajectoryBuilder(right1_4.end())
+                        .lineToLinearHeading(new Pose2d(new Vector2d(-24, 45), Math.toRadians(90)))
                         .build();
                 drive.followTrajectory(right2);
                 Trajectory right3 = drive.trajectoryBuilder(right2.end().plus(new Pose2d(0, 0, Math.toRadians(180))))
@@ -121,7 +126,7 @@ public class BlueTop extends LinearOpMode {
                         .back(5)
                         .build();
                 Trajectory center2 = drive.trajectoryBuilder(center1_5.end())
-                        .lineToLinearHeading(new Pose2d(-35.5, 50, Math.toRadians(90)))
+                        .lineToLinearHeading(new Pose2d(-35.5, 45, Math.toRadians(90)))
                         .build();
                 drive.followTrajectory(center1_5);
                 drive.followTrajectory(center2);
@@ -153,7 +158,7 @@ public class BlueTop extends LinearOpMode {
                 //place prop on spike mark
                 placeOnSpike();
                 Trajectory left3 = drive.trajectoryBuilder(left2_2.end())
-                        .lineToSplineHeading(new Pose2d(-42, 50, Math.toRadians(90)))
+                        .lineToSplineHeading(new Pose2d(-42, 45, Math.toRadians(90)))
                         .build();
                 drive.followTrajectory(left3);
                 Trajectory left4 = drive.trajectoryBuilder(left3.end().plus(new Pose2d(0, 0, Math.toRadians(180))))
@@ -170,6 +175,7 @@ public class BlueTop extends LinearOpMode {
         }
     }
     private void placeOnSpike(){
+        sleep(1000);
         lift.setPower(1);
         sleep(liftDelay/8);
         lift.setPower(.25);
@@ -181,9 +187,11 @@ public class BlueTop extends LinearOpMode {
         intake.setPosition(intakeUp);
     }
     private void placeOnCanvas(){
-        angleServo.setPosition(angleServoDown);
+        angleServo.setPower(-.2);
+        sleep(2000);
+        angleServo.setPower(0);
         sleep(3500);
         claw.setPosition(clawUp);
-
+        sleep(1000);
     }
 }

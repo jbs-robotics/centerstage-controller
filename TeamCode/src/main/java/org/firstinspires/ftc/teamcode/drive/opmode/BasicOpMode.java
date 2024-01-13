@@ -56,13 +56,14 @@ import com.qualcomm.robotcore.util.Range;
 public class BasicOpMode extends LinearOpMode {
 
     // Declare OpMode members.
-    private int pullupUp = 12690, pullupDown = 0;
+    private int pullupUp = 12690, pullupDown = 0, counter = 0, counter2 = 0;
+    ;
     private double servoUpLimit = 0.75;
     private ElapsedTime runtime = new ElapsedTime();
-    private DcMotor leftFront, leftBack, rightFront, rightBack, lift, pullupMotor, urchin = null, droneLauncher = null;
-    private Servo intakeServo = null;
-    private CRServo hookServo = null;
-    private double currentServoPos = 0.75, sensitivity = 1, driveSensitivity = .75, brakingOffset = -0.1;
+    private DcMotor leftFront, leftBack, rightFront, rightBack, lift, pullupMotor, urchin = null;
+    private Servo intakeServo = null, droneLauncher = null, claw = null;
+    private CRServo hookServo = null, angleServo = null;
+    private double currentServoPos = 0.75, sensitivity = 1, driveSensitivity = .75, brakingOffset = -0.1, angleServoPos = 0.45, clawPos = 0.43;
 
     @Override
     public void runOpMode() {
@@ -81,6 +82,8 @@ public class BasicOpMode extends LinearOpMode {
 
         // Lift Motors
         lift = hardwareMap.get(DcMotor.class, "lift");
+        angleServo = hardwareMap.get(CRServo.class, "angleServo");
+        claw = hardwareMap.get(Servo.class, "claw");
 //        urchin = hardwareMap.get(DcMotor.class, "urchin");
 
         // Pullup Motors
@@ -89,7 +92,7 @@ public class BasicOpMode extends LinearOpMode {
         intakeServo = hardwareMap.get(Servo.class, "intake");
 
         // Launcher Motors
-//        droneLauncher = hardwareMap.get(DcMotor.class, "droneLauncher");
+        droneLauncher = hardwareMap.get(Servo.class, "droneLauncher");
 
 
         // To drive forward, most robots need the motor on on e side to be reversed, because the axles point in opposite directions.
@@ -101,10 +104,14 @@ public class BasicOpMode extends LinearOpMode {
         leftBack.setDirection(DcMotor.Direction.REVERSE);
         rightBack.setDirection(DcMotor.Direction.FORWARD);
         pullupMotor.setDirection(DcMotor.Direction.FORWARD);
-
         lift.setDirection(DcMotor.Direction.FORWARD);
+
+        //resets the encoders 0 position
         lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
         lift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+
 //        pullupMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         pullupMotor.setTargetPosition(0);
 
@@ -128,8 +135,6 @@ public class BasicOpMode extends LinearOpMode {
             double liftControl = gamepad2.left_stick_y;
             double intake = -gamepad2.right_stick_y;
             boolean hookBtn = gamepad2.y;
-            boolean hookServoDown = gamepad2.dpad_down;
-            boolean hookServoUp = gamepad2.dpad_up;
             //a and b are switched on gamepad
             boolean lockOn = gamepad2.b;
             boolean lockOff = gamepad2.a;
@@ -144,7 +149,10 @@ public class BasicOpMode extends LinearOpMode {
             //gamepad 2(lift control)
             double intakePos = Range.clip(intake, -sensitivity/180, sensitivity/180);
             double liftPower = Range.clip(liftControl, -sensitivity, sensitivity);
-            boolean launch = gamepad2.right_bumper;
+            boolean launch = gamepad2.dpad_up;
+            boolean unlaunch = gamepad2.dpad_down;
+            boolean angleServoUp = gamepad1.dpad_up, angleServoDown = gamepad1.dpad_down, clawUp = gamepad1.dpad_right, clawDown = gamepad1.dpad_left;
+
 
             // Send calculated power to wheels
             leftFront.setPower(lfPower);
@@ -172,18 +180,27 @@ public class BasicOpMode extends LinearOpMode {
                 pullupMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 pullupMotor.setPower(1);
             }
-            if(hookServoDown) hookServo.setPower(1);
-            if(hookServoUp) hookServo.setPower(-2);
+//            angleServo.setPosition(angleServoPos);
+            claw.setPosition(clawPos);
+            if(angleServoUp) {
+                angleServo.setPower(.2);
+            }
+            else if(angleServoDown) {
+                angleServo.setPower(-.2);
+            }
+            else angleServo.setPower(0);
+            if(clawUp && clawPos <= 1) clawPos += 0.001;
+            if(clawDown && clawPos >= 0) clawPos -= 0.001;
             if(gamepad2.x){
                 pullupMotor.setTargetPosition(pullupDown);
                 pullupMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 pullupMotor.setPower(1);
             }
             if (launch){
-                //TODO: Test This
-                droneLauncher.setPower(1);
-                sleep(1000);
-                droneLauncher.setPower(0);
+                droneLauncher.setPosition(0);
+            }
+            if (unlaunch){
+                droneLauncher.setPosition(0.5);
             }
             telemetry.addData("Current Intake Servo Pos: ", currentServoPos);
             telemetry.addData("Sensitivity: ", sensitivity);
@@ -191,6 +208,9 @@ public class BasicOpMode extends LinearOpMode {
             telemetry.addData("pullupMotor Position: ", pullupMotor.getCurrentPosition());
             telemetry.addData("pullupMotor Target Position: ", pullupMotor.getTargetPosition());
             telemetry.addData("LiftPower: ", lift.getPower());
+            telemetry.addData("angleServoPos: ", angleServo.getPower());
+            telemetry.addData("counter: ", counter);
+            telemetry.addData("counter2: ", counter2);
             telemetry.update();
         }
     }
