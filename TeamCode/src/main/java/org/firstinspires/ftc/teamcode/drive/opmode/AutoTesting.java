@@ -5,6 +5,7 @@ import android.content.res.AssetFileDescriptor;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraRotation;
@@ -20,6 +21,7 @@ import java.nio.channels.FileChannel;
 @Autonomous(name = "Testing Auto")
 public class AutoTesting extends LinearOpMode {
     private DcMotor lift = null;
+    private Servo fingerer = null;
     private OpenCvCamera webcam = null;
     private ColorDetectorPipeline pipeline = null;
     private int liftDelay = 1500;
@@ -44,6 +46,7 @@ public class AutoTesting extends LinearOpMode {
     }
     @Override
     public void runOpMode() {
+        fingerer = hardwareMap.get(Servo.class, "fingerer2");
         int cameraMonitorViewId = hardwareMap.appContext.getResources()
                 .getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         webcam = OpenCvCameraFactory.getInstance()
@@ -88,32 +91,30 @@ public class AutoTesting extends LinearOpMode {
 //        telemetry.addData("Inference Result", "Class: " +);
         telemetry.update();
         while(opModeIsActive()) {
-            telemetry.addData("Status", "Running");
-            telemetry.addData("Frame Count", webcam);
-            telemetry.addData("FPS", String.format("%.2f", webcam.getFps()));
-            telemetry.addData("Total frame time ms", webcam.getTotalFrameTimeMs());
-            telemetry.addData("Pipeline time ms", webcam.getPipelineTimeMs());
-            telemetry.addData("Overhead time ms", webcam.getOverheadTimeMs());
-            telemetry.addData("Theoretical max FPS", webcam.getCurrentPipelineMaxFps());
-            telemetry.addData("region1Average", pipeline.getRegion1Average()[0]);
-            telemetry.addData("region1Average", pipeline.getRegion1Average()[1]);
-            telemetry.addData("region1Average", pipeline.getRegion1Average()[2]);
-            telemetry.addData("region2Average", pipeline.getRegion2Average()[0]);
-            telemetry.addData("region2Average", pipeline.getRegion2Average()[1]);
-            telemetry.addData("region2Average", pipeline.getRegion2Average()[2]);
-            telemetry.addData("percentRed1", pipeline.getPercentRed1());
-            telemetry.addData("percentRed2", pipeline.getPercentRed2());
-            telemetry.addData("percentBlue1", pipeline.getPercentBlue1());
-            telemetry.addData("percentBlue2", pipeline.getPercentBlue2());
-            telemetry.addData("Prediction", pipeline.getAnalysis());
-            //display the frame
-//            telemetry.addData("TF Lite", pipeline.getTfliteModel());
-//            telemetry.addData("Inference Result", "Class: " + pipeline.getAnalysis());
-//            double confidence[] = pipeline.getConfidence();
-//            telemetry.addData("Confidence", "l: " + confidence[0] + " r: " + confidence[1] + " c: " + confidence[2]);
-//            telemetry.addData("Confidence", pipeline.getConfidence());
-//            telemetry.addData("Frame", pipeline.frameArr(pipeline.processFrame()));
+//            telemetry.addData("Status", "Running");
+//            telemetry.addData("Frame Count", webcam);
+//            telemetry.addData("FPS", String.format("%.2f", webcam.getFps()));
+//            telemetry.addData("Total frame time ms", webcam.getTotalFrameTimeMs());
+//            telemetry.addData("Pipeline time ms", webcam.getPipelineTimeMs());
+//            telemetry.addData("Overhead time ms", webcam.getOverheadTimeMs());
+//            telemetry.addData("Theoretical max FPS", webcam.getCurrentPipelineMaxFps());
+//            telemetry.addData("region1Average", pipeline.getRegion1Average()[0]);
+//            telemetry.addData("region1Average", pipeline.getRegion1Average()[1]);
+//            telemetry.addData("region1Average", pipeline.getRegion1Average()[2]);
+//            telemetry.addData("region2Average", pipeline.getRegion2Average()[0]);
+//            telemetry.addData("region2Average", pipeline.getRegion2Average()[1]);
+//            telemetry.addData("region2Average", pipeline.getRegion2Average()[2]);
+//            telemetry.addData("percentRed1", pipeline.getPercentRed1());
+//            telemetry.addData("percentRed2", pipeline.getPercentRed2());
+//            telemetry.addData("percentBlue1", pipeline.getPercentBlue1());
+//            telemetry.addData("percentBlue2", pipeline.getPercentBlue2());
+//            telemetry.addData("Prediction", pipeline.getAnalysis());
+            telemetry.addData("fingererPos: ", fingerer.getPosition());
             telemetry.update();
+            fingerer.setPosition(0);
+//            //sleep(2000);
+//            sleep(5);
+//            fingerer.setPosition(0);
         }
 //        lift.setPower(-1);
 //        sleep(liftDelay);

@@ -21,6 +21,7 @@ public class MeepMeepTesting {
         RoadRunnerBotEntity RTL = new DefaultBotBuilder(meepMeep)
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
                 .setConstraints(90, 90, Math.toRadians(180), Math.toRadians(180), 15)
+                .setDimensions(17.75, 17)
                 //left
                 .followTrajectorySequence(drive ->
                         drive.trajectorySequenceBuilder(new Pose2d(60, 10, Math.toRadians(180)))
@@ -34,6 +35,7 @@ public class MeepMeepTesting {
                 );
         RoadRunnerBotEntity RTC = new DefaultBotBuilder(meepMeep)
                 .setConstraints(90, 90, Math.toRadians(180), Math.toRadians(180), 15)
+                .setDimensions(17.75, 17)
                 //center
                 .followTrajectorySequence(drive -> drive.trajectorySequenceBuilder(new Pose2d(60, 10, Math.toRadians(180)))
                         .forward(27)
@@ -47,6 +49,7 @@ public class MeepMeepTesting {
                 );
         RoadRunnerBotEntity RTR = new DefaultBotBuilder(meepMeep)
                 .setConstraints(90, 90, Math.toRadians(180), Math.toRadians(180), 15)
+                .setDimensions(17.75, 17)
                 //right
                 .followTrajectorySequence(drive -> drive.trajectorySequenceBuilder(new Pose2d(60, 10, Math.toRadians(180)))
                         .strafeRight(25)
@@ -62,6 +65,7 @@ public class MeepMeepTesting {
         RoadRunnerBotEntity RBL = new DefaultBotBuilder(meepMeep)
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
                 .setConstraints(90, 90, Math.toRadians(180), Math.toRadians(180), 15)
+                .setDimensions(17.75, 17)
                 //left
                 .followTrajectorySequence(drive ->
                         drive.trajectorySequenceBuilder(new Pose2d(60, -37, Math.toRadians(180)))
@@ -80,6 +84,7 @@ public class MeepMeepTesting {
                 );
         RoadRunnerBotEntity RBC = new DefaultBotBuilder(meepMeep)
         .setConstraints(90, 90, Math.toRadians(180), Math.toRadians(180), 15)
+        .setDimensions(17.75, 17)
         //center
         .followTrajectorySequence(drive -> drive.trajectorySequenceBuilder(new Pose2d(60, -37, Math.toRadians(180)))
                 .forward(27)
@@ -95,6 +100,7 @@ public class MeepMeepTesting {
         );
         RoadRunnerBotEntity RBR = new DefaultBotBuilder(meepMeep)
         .setConstraints(90, 90, Math.toRadians(180), Math.toRadians(180), 15)
+        .setDimensions(17.75, 17)
         //right
         .followTrajectorySequence(drive -> drive.trajectorySequenceBuilder(new Pose2d(60, -37, Math.toRadians(180)))
                 .lineToSplineHeading(new Pose2d(35, -33, Math.toRadians(90)))
@@ -113,6 +119,7 @@ public class MeepMeepTesting {
         RoadRunnerBotEntity BTR = new DefaultBotBuilder(meepMeep)
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
                 .setConstraints(90, 90, Math.toRadians(180), Math.toRadians(180), 15)
+                .setDimensions(17.75, 17)
                 //right
                 .followTrajectorySequence(drive ->
                         drive.trajectorySequenceBuilder(new Pose2d(-60, 10, Math.toRadians(0)))
@@ -126,6 +133,7 @@ public class MeepMeepTesting {
                 );
         RoadRunnerBotEntity BTC = new DefaultBotBuilder(meepMeep)
                 .setConstraints(90, 90, Math.toRadians(180), Math.toRadians(180), 15)
+                .setDimensions(17.75, 17)
                 //center
                 .followTrajectorySequence(drive -> drive.trajectorySequenceBuilder(new Pose2d(-60, 10, Math.toRadians(0)))
                         .forward(27)
@@ -153,6 +161,7 @@ public class MeepMeepTesting {
         RoadRunnerBotEntity BBR = new DefaultBotBuilder(meepMeep)
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
                 .setConstraints(90, 90, Math.toRadians(180), Math.toRadians(180), 15)
+                .setDimensions(17.75, 17)
                 //right
                 .followTrajectorySequence(drive ->
                         drive.trajectorySequenceBuilder(new Pose2d(-60, -37, Math.toRadians(0)))
@@ -170,6 +179,7 @@ public class MeepMeepTesting {
                 );
         RoadRunnerBotEntity BBC = new DefaultBotBuilder(meepMeep)
                 .setConstraints(90, 90, Math.toRadians(180), Math.toRadians(180), 15)
+                .setDimensions(17.75, 17)
                 //center
                 .followTrajectorySequence(drive -> drive.trajectorySequenceBuilder(new Pose2d(-60, -37, Math.toRadians(0)))
                         .forward(27)
@@ -185,6 +195,7 @@ public class MeepMeepTesting {
                 );
         RoadRunnerBotEntity BBL = new DefaultBotBuilder(meepMeep)
                 .setConstraints(90, 90, Math.toRadians(180), Math.toRadians(180), 15)
+                .setDimensions(17.75, 17)
                 //left
                 .followTrajectorySequence(drive -> drive.trajectorySequenceBuilder(new Pose2d(-60, -37, Math.toRadians(0)))
                         .lineToSplineHeading(new Pose2d(-35, -33, Math.toRadians(90)))
@@ -192,8 +203,8 @@ public class MeepMeepTesting {
                         .splineToConstantHeading(new Vector2d(-60, -37), Math.toRadians(360))
                         .splineToConstantHeading(new Vector2d(-55, -12), Math.toRadians(0))
                         .splineToConstantHeading(new Vector2d(-48, -12), Math.toRadians(0))
-                        .splineToConstantHeading(new Vector2d(-42, 45), Math.toRadians(90))
-                        .turn(Math.toRadians(180))
+                        .splineToSplineHeading(new Pose2d(-42, 45, Math.toRadians(270)), Math.toRadians(90))
+//                        .turn(Math.toRadians(180))
                         .back(5)
                         //place pixel on canvas
                         .build()
@@ -211,13 +222,12 @@ public class MeepMeepTesting {
 //                .addEntity(BTL)
 //                .addEntity(BTR)
 //                .addEntity(BBC)
-//                .addEntity(BBL)
+                .addEntity(BBL)
 //                .addEntity(BBR)
-                .addEntity(RTC)
+//                .addEntity(RTC)
 //                .addEntity(RTL)
 //                .addEntity(RTR)
 //                .addEntity(RBC)
-//                .addEntity(RBR)
 //                .addEntity(RBR)
                 .start();
     }

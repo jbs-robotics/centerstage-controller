@@ -27,7 +27,7 @@ public class BlueTop extends LinearOpMode {
 
     private OpenCvCamera webcam = null;
     private ColorDetectorPipeline pipeline = null;
-    private Servo intake = null, claw = null;
+    private Servo intake = null, claw = null, fingerer;
     private CRServo angleServo = null;
     private double intakeUp = 0.7, intakeDown = 0, clawUp = 0.5, clawDown = 0.4, angleServoUp = .1, angleServoDown = 0.43;
     @Override
@@ -50,8 +50,8 @@ public class BlueTop extends LinearOpMode {
             @Override
             public void onError(int errorCode) { telemetry.addData("Error", errorCode); }
         });
-
-        pipeline.setRegionPoints(new Point(40, 140), new Point(80, 180), pipeline.getRegion2_pointA(), pipeline.getRegion2_pointB());
+        //home field: 40, 80 for x's
+        pipeline.setRegionPoints(new Point(20, 140), new Point(60, 180), pipeline.getRegion2_pointA(), pipeline.getRegion2_pointB());
         telemetry.addData("region1_pointA: ", pipeline.getRegion1_pointA());
         telemetry.addData("region1_pointB: ", pipeline.getRegion1_pointB());
         telemetry.addData("region2_pointA: ", pipeline.getRegion2_pointA());
@@ -66,6 +66,7 @@ public class BlueTop extends LinearOpMode {
         angleServo = hardwareMap.get(CRServo.class, "angleServo");
         claw = hardwareMap.get(Servo.class, "claw");
         lift = hardwareMap.get(DcMotor.class, "lift");
+        fingerer = hardwareMap.get(Servo.class, "fingerer2");
         lift.setDirection(DcMotor.Direction.REVERSE);
         intake.setPosition(intakeUp);
         claw.setPosition(clawDown);
@@ -83,13 +84,13 @@ public class BlueTop extends LinearOpMode {
                         .build();
                 drive.followTrajectory(right1);
                 Trajectory right1_2_1 = drive.trajectoryBuilder(right1.end())
-                        .strafeRight(6)
+                        .strafeRight(8)
                         .build();
                 Trajectory right1_2 = drive.trajectoryBuilder(right1_2_1.end())
-                        .forward(15)
+                        .forward(17)
                         .build();
                 Trajectory right1_3 = drive.trajectoryBuilder(right1_2.end())
-                        .back(12)
+                        .back(8)
                         .build();
                 drive.followTrajectory(right1_2);
                 drive.followTrajectory(right1_3);
@@ -104,7 +105,7 @@ public class BlueTop extends LinearOpMode {
                         .build();
                 drive.followTrajectory(right2);
                 Trajectory right3 = drive.trajectoryBuilder(right2.end().plus(new Pose2d(0, 0, Math.toRadians(180))))
-                        .lineToConstantHeading(new Vector2d(-24, 54))
+                        .lineToConstantHeading(new Vector2d(-26, 54))
                         .build();
                 drive.turn(Math.toRadians(180));
                 drive.followTrajectory(right3);
@@ -113,17 +114,21 @@ public class BlueTop extends LinearOpMode {
                 break;
             case 'c': //center
                 Trajectory center1 = drive.trajectoryBuilder(drive.getPoseEstimate())
-                        .forward(35)
+                        .forward(38)
                         .build();
                 drive.followTrajectory(center1);
                 Trajectory center1_2 = drive.trajectoryBuilder(center1.end())
-                        .back(12)
+                        .back(10)
+                        .build();
+                Trajectory center1_3 = drive.trajectoryBuilder(center1_2.end())
+                        .strafeRight(4)
                         .build();
                 drive.followTrajectory(center1_2);
+                drive.followTrajectory(center1_3);
                 //place prop on spike mark
                 placeOnSpike();
-                Trajectory center1_5 = drive.trajectoryBuilder(center1_2.end())
-                        .back(5)
+                Trajectory center1_5 = drive.trajectoryBuilder(center1_3.end())
+                        .back(12)
                         .build();
                 Trajectory center2 = drive.trajectoryBuilder(center1_5.end())
                         .lineToLinearHeading(new Pose2d(-35.5, 45, Math.toRadians(90)))
@@ -131,7 +136,7 @@ public class BlueTop extends LinearOpMode {
                 drive.followTrajectory(center1_5);
                 drive.followTrajectory(center2);
                 Trajectory center3 = drive.trajectoryBuilder(center2.end().plus(new Pose2d(0, 0, Math.toRadians(180))))
-                        .lineToConstantHeading(new Vector2d(-37, 53.5))
+                        .lineToConstantHeading(new Vector2d(-36, 51))
                         .build();
                 drive.turn(Math.toRadians(180));
                 drive.followTrajectory(center3);
@@ -151,12 +156,16 @@ public class BlueTop extends LinearOpMode {
                         .forward(12)
                         .build();
                 Trajectory left2_2 = drive.trajectoryBuilder(left2_1.end())
-                        .back(12)
+                        .back(6)
                         .build();
                 drive.followTrajectory(left2_1);
                 drive.followTrajectory(left2_2);
                 //place prop on spike mark
                 placeOnSpike();
+                Trajectory left2_3 = drive.trajectoryBuilder(left2_2.end())
+                        .back(12)
+                        .build();
+                drive.followTrajectory(left2_3);
                 Trajectory left3 = drive.trajectoryBuilder(left2_2.end())
                         .lineToSplineHeading(new Pose2d(-42, 45, Math.toRadians(90)))
                         .build();
@@ -175,22 +184,31 @@ public class BlueTop extends LinearOpMode {
         }
     }
     private void placeOnSpike(){
-        sleep(1000);
-        lift.setPower(1);
-        sleep(liftDelay/8);
-        lift.setPower(.25);
-        intake.setPosition(.5);
-        sleep(1000);
-        intake.setPosition(.3);
-//        intake.setPosition(intakeDown);
-        sleep(4000);
-        intake.setPosition(intakeUp);
+//        sleep(1000);
+//        lift.setPower(1);
+//        sleep(liftDelay/8);
+//        lift.setPower(.25);
+////        intake.setPosition(.5);
+////        sleep(1000);
+//        double intakePos = .7;
+//        for(int i = 0; i < 70; i++){
+//            intake.setPosition(intakePos);
+//            intakePos -= .01;
+//            sleep(100);
+//        }
+//
+//        intake.setPosition(0);
+////        intake.setPosition(intakeDown);
+////        sleep(4000);
+//        intake.setPosition(intakeUp);
+        fingerer.setPosition(0.4);
+        sleep(2000);
     }
     private void placeOnCanvas(){
         angleServo.setPower(-.2);
         sleep(2000);
         angleServo.setPower(0);
-        sleep(3500);
+        sleep(1000);
         claw.setPosition(clawUp);
         sleep(1000);
     }
