@@ -109,7 +109,7 @@ public class BlueTop extends LinearOpMode {
                         .build();
                 drive.turn(Math.toRadians(180));
                 drive.followTrajectory(right3);
-                //place pixel on canvas
+                //place pixel on canvas1
                 placeOnCanvas();
                 break;
             case 'c': //center
@@ -136,7 +136,7 @@ public class BlueTop extends LinearOpMode {
                 drive.followTrajectory(center1_5);
                 drive.followTrajectory(center2);
                 Trajectory center3 = drive.trajectoryBuilder(center2.end().plus(new Pose2d(0, 0, Math.toRadians(180))))
-                        .lineToConstantHeading(new Vector2d(-36, 51))
+                        .lineToConstantHeading(new Vector2d(-35.5, 54))
                         .build();
                 drive.turn(Math.toRadians(180));
                 drive.followTrajectory(center3);
@@ -167,13 +167,13 @@ public class BlueTop extends LinearOpMode {
                         .build();
                 drive.followTrajectory(left2_3);
                 Trajectory left3 = drive.trajectoryBuilder(left2_2.end())
-                        .lineToSplineHeading(new Pose2d(-42, 45, Math.toRadians(90)))
+                        .lineToConstantHeading(new Vector2d(-42, 45))
                         .build();
                 drive.followTrajectory(left3);
-                Trajectory left4 = drive.trajectoryBuilder(left3.end().plus(new Pose2d(0, 0, Math.toRadians(180))))
+                Trajectory left4 = drive.trajectoryBuilder(left3.end())
                         .lineToConstantHeading(new Vector2d(-42, 54))
                         .build();
-                drive.turn(Math.toRadians(180));
+//                drive.turn(Math.toRadians(180));
                 drive.followTrajectory(left4);
                 //place pixel on canvas
                 placeOnCanvas();
