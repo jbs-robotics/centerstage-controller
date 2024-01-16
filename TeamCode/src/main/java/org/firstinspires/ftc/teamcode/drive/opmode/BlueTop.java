@@ -144,6 +144,7 @@ public class BlueTop extends LinearOpMode {
                 placeOnCanvas();
                 break;
             case 'l': //left
+                //TODO: Update the robot
                 Trajectory left1 = drive.trajectoryBuilder(drive.getPoseEstimate())
                         .strafeLeft(27)
                         .build();
