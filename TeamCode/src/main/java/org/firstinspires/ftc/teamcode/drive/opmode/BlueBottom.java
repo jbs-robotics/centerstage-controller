@@ -24,7 +24,7 @@ import java.util.List;
 /*
  * This is an example of a more complex path to really test the tuning.
  */
-@Autonomous(group = "drive", name="Blue Bottom")
+@Autonomous(group = "drive", name="Blue Bottom", preselectTeleOp="Basic: Linear OpMode")
 public class BlueBottom extends LinearOpMode {
     private DcMotor lift = null;
     private int liftDelay = 1000;

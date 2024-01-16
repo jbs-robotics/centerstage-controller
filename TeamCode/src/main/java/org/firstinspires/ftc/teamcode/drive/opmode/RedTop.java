@@ -21,7 +21,7 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 /*
  * This is an example of a more complex path to really test the tuning.
  */
-@Autonomous(group = "drive", name="Red Top")
+@Autonomous(group = "drive", name="Red Top", preselectTeleOp="Basic: Linear OpMode")
 public class RedTop extends LinearOpMode {
     private DcMotor lift = null;
     private OpenCvCamera webcam = null;

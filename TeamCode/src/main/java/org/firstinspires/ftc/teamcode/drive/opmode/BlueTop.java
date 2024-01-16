@@ -20,7 +20,7 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 /*
  * This is an example of a more complex path to really test the tuning.
  */
-@Autonomous(group = "drive", name="Blue Top")
+@Autonomous(group = "drive", name="Blue Top", preselectTeleOp="Basic: Linear OpMode")
 public class BlueTop extends LinearOpMode {
     private DcMotor lift = null;
     private int liftDelay = 1000;
