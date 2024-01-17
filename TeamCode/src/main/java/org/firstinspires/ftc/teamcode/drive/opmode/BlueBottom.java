@@ -149,7 +149,7 @@ public class BlueBottom extends LinearOpMode {
                 break;
             case 'r': //right
                 TrajectorySequence toSpikeRight = drive.trajectorySequenceBuilder(new Pose2d(-60, -37, Math.toRadians(0)))
-                        .lineToSplineHeading(new Pose2d(-35, -37, Math.toRadians(-90)))
+                        .lineToSplineHeading(new Pose2d(-25, -37, Math.toRadians(-90)))
                         .forward(13)
                         .back(12)
                         .build();
