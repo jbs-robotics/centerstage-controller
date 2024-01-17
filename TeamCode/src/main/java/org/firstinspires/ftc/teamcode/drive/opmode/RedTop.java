@@ -155,7 +155,7 @@ public class RedTop extends LinearOpMode {
 //                drive.followTrajectory(center4);
                 break;
             case 'r': //right
-                Trajectory right1 = drive.trajectoryBuilder(new Pose2d(60, 10, Math.toRadians(180)))
+                Trajectory right1 = drive.trajectoryBuilder(new Pose2d(60, 10, Math.toRadians(0)))
                         .strafeRight(27)
                         .build();
                 Trajectory right2 = drive.trajectoryBuilder(right1.end())
