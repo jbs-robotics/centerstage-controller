@@ -194,6 +194,7 @@ public class MeepMeepTesting {
                                 .lineToSplineHeading(new Pose2d(-35, -37, Math.toRadians(-90)))
                                 .forward(13)
                                 .back(12)
+                                .strafeLeft(8)
                                 //place pixel
                                 .back(4)
                                 .strafeLeft(24)
@@ -227,10 +228,11 @@ public class MeepMeepTesting {
                 .followTrajectorySequence(drive -> drive.trajectorySequenceBuilder(new Pose2d(-60, -37, Math.toRadians(0)))
                         .forward(38)
                         .back(10)
-                        .strafeRight(4)
+                        .strafeLeft(4)
                         //place pixel
                         .back(10)
-                        .strafeRight(10)
+                        .strafeRight(18)
+                        .forward(20)
                         .splineToLinearHeading(new Pose2d(-10, -30, Math.toRadians(-90)), Math.toRadians(90))
                         .back(5)
                         .splineToConstantHeading(new Vector2d(-35, 38), Math.toRadians(-180))
@@ -264,7 +266,7 @@ public class MeepMeepTesting {
                         //place pixel
                         .back(6)
                         .lineToSplineHeading(new Pose2d(-10, -38, Math.toRadians(-90)))
-                        .back(24)
+                        .back(55)
                         .splineToConstantHeading(new Vector2d(-43, 45), Math.toRadians(180))
                         .back(5)
                         //place pixel on canvas
@@ -282,9 +284,9 @@ public class MeepMeepTesting {
 //                .addEntity(BTC)
 //                .addEntity(BTL)
 //                .addEntity(BTR)
-                .addEntity(BBC2)
+//                .addEntity(BBC2)
 //                .addEntity(BBL)
-                .addEntity(BBL2)
+//                .addEntity(BBL2)
 //                .addEntity(BBR)
                 .addEntity(BBR2)
 //                .addEntity(RTC)
