@@ -172,7 +172,7 @@ public class BlueTop extends LinearOpMode {
                         .build();
                 drive.followTrajectory(left3);
                 Trajectory left4 = drive.trajectoryBuilder(left3.end())
-                        .lineToConstantHeading(new Vector2d(-42, 54))
+                        .lineToConstantHeading(new Vector2d(-42, 55))
                         .build();
 //                drive.turn(Math.toRadians(180));
                 drive.followTrajectory(left4);

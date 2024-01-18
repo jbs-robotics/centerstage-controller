@@ -85,9 +85,9 @@ public class BlueBottom extends LinearOpMode {
         switch(TFODPrediction){
             case 'l': //left
                 TrajectorySequence toSpikeLeft = drive.trajectorySequenceBuilder(new Pose2d(-60, -37, Math.toRadians(0)))
-                        .lineToSplineHeading(new Pose2d(-35, -33, Math.toRadians(90)))
-                        .forward(13)
-                        .back(12)
+                        .splineToSplineHeading(new Pose2d(-34, -33, Math.toRadians(90)), Math.toRadians(90))
+                        .forward(1)
+//                        .back(12)
                         .build();
                 drive.followTrajectorySequence(toSpikeLeft);
 
@@ -96,10 +96,10 @@ public class BlueBottom extends LinearOpMode {
 
                 TrajectorySequence toBackdropLeft = drive.trajectorySequenceBuilder(toSpikeLeft.end())
                         .back(6)
-                        .lineToSplineHeading(new Pose2d(-10, -38, Math.toRadians(-90)))
-                        .back(24)
-                        .splineToConstantHeading(new Vector2d(-43, 45), Math.toRadians(180))
-                        .back(5)
+                        .lineToSplineHeading(new Pose2d(-3, -38, Math.toRadians(-90)))
+                        .back(60)
+                        .splineToConstantHeading(new Vector2d(-39, 45), Math.toRadians(180))
+                        .back(6)
                         .build();
                 drive.followTrajectorySequence(toBackdropLeft);
 
@@ -164,11 +164,9 @@ public class BlueBottom extends LinearOpMode {
 
                 break;
             case 'r': //right
-                telemetry.addLine("Detected BBR!");
                 TrajectorySequence toSpikeRight = drive.trajectorySequenceBuilder(new Pose2d(-60, -37, Math.toRadians(0)))
                         .lineToSplineHeading(new Pose2d(-25, -35, Math.toRadians(-90)))
                         .build();
-
                 drive.followTrajectorySequence(toSpikeRight);
                 //place pixel on spike mark
                 placeOnSpike();
@@ -180,7 +178,6 @@ public class BlueBottom extends LinearOpMode {
                         .back(14)
                         .build();
                 drive.followTrajectorySequence(toBackdropRight);
-
                 //place pixel on canvas
                 placeOnCanvas();
                 break;
@@ -206,6 +203,6 @@ public class BlueBottom extends LinearOpMode {
     }
     private void placeOnSpike(){
         fingerer.setPosition(0);
-        sleep(2000);
+        sleep(500);
     }
 }
