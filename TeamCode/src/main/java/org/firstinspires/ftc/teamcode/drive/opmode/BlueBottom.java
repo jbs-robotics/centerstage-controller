@@ -72,7 +72,7 @@ public class BlueBottom extends LinearOpMode {
         angleServo = hardwareMap.get(CRServo.class, "angleServo");
         claw = hardwareMap.get(Servo.class, "claw");
         lift = hardwareMap.get(DcMotor.class, "lift");
-        fingerer = hardwareMap.get(Servo.class, "fingerer2");
+        fingerer = hardwareMap.get(Servo.class, "fingerer");
         lift.setDirection(DcMotor.Direction.REVERSE);
         intake.setPosition(intakeUp);
         claw.setPosition(clawDown);
@@ -80,7 +80,7 @@ public class BlueBottom extends LinearOpMode {
         telemetry.addData(">", "Press Play to start op mode");
         waitForStart();
         char TFODPrediction = pipeline.getAnalysis();
-        drive.setPoseEstimate(new Pose2d(new Vector2d(-60, -37), Math.toRadians(180)));
+        drive.setPoseEstimate(new Pose2d(new Vector2d(-60, -37), Math.toRadians(0)));
 
         switch(TFODPrediction){
             case 'l': //left
@@ -108,16 +108,17 @@ public class BlueBottom extends LinearOpMode {
 
                 break;
             case 'c': //center
-                Trajectory center1 = drive.trajectoryBuilder(new Pose2d(-60, -37, Math.toRadians(180)))
-                        .forward(38)
+                Trajectory center1 = drive.trajectoryBuilder(new Pose2d(-60, -37, Math.toRadians(0)))
+                        .forward(28)
                         .build();
                 drive.followTrajectory(center1);
-                Trajectory center1_2 = drive.trajectoryBuilder(center1.end())
-                        .back(10)
-                        .build();
-                drive.followTrajectory(center1_2);
-                Trajectory center1_3 = drive.trajectoryBuilder(center1_2.end())
-                        .strafeRight(4)
+//                Trajectory center1_2 = drive.trajectoryBuilder(center1.end())
+//                        .back(10)
+//                        .build();
+//                drive.followTrajectory(center1_2);
+//                Trajectory center1_3 = drive.trajectoryBuilder(center1_2.end())
+                Trajectory center1_3 = drive.trajectoryBuilder(center1.end())
+                        .strafeLeft(3)
                         .build();
                 drive.followTrajectory(center1_3);
 
@@ -129,18 +130,33 @@ public class BlueBottom extends LinearOpMode {
                         .build();
                 drive.followTrajectory(center1_4);
 
-                Trajectory center2 = drive.trajectoryBuilder(center1.end())
+                Trajectory center1_5 = drive.trajectoryBuilder(center1_4.end())
+                        .strafeRight(22)
+                        .build();
+                drive.followTrajectory(center1_5);
+
+                Trajectory center1_6 = drive.trajectoryBuilder(center1_5.end())
+                        .forward(24)
+                        .build();
+                drive.followTrajectory(center1_6);
+
+                Trajectory center2 = drive.trajectoryBuilder(center1_6.end())
                         .splineToLinearHeading(new Pose2d(-10, -30, Math.toRadians(-90)), Math.toRadians(90))
-//                        .build();
-//                drive.followTrajectory(center2);
-//
-//                Trajectory center2_1 = drive.trajectoryBuilder(center2.end())
-                        .splineToConstantHeading(new Vector2d(-35, 38), Math.toRadians(-180))
                         .build();
                 drive.followTrajectory(center2);
 
-                Trajectory center3 = drive.trajectoryBuilder(center2.end())
-                        .back(12)
+                Trajectory center2_1 = drive.trajectoryBuilder(center2.end())
+                        .back(5)
+                        .build();
+                drive.followTrajectory(center2_1);
+
+                Trajectory center2_2 = drive.trajectoryBuilder(center2_1.end())
+                        .splineToConstantHeading(new Vector2d(-40, 38), Math.toRadians(-180))
+                        .build();
+                drive.followTrajectory(center2_2);
+
+                Trajectory center3 = drive.trajectoryBuilder(center2_2.end())
+                        .back(17)
                         .build();
                 drive.followTrajectory(center3);
                 //place pixel on canvas
@@ -188,7 +204,7 @@ public class BlueBottom extends LinearOpMode {
         sleep(1000);
     }
     private void placeOnSpike(){
-        fingerer.setPosition(0.4);
+        fingerer.setPosition(0);
         sleep(2000);
     }
 }

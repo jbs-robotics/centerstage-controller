@@ -225,16 +225,16 @@ public class MeepMeepTesting {
                 .setDimensions(17.75, 17)
                 //center
                 .followTrajectorySequence(drive -> drive.trajectorySequenceBuilder(new Pose2d(-60, -37, Math.toRadians(0)))
-                        .forward(38)
-                        .back(10)
-                        .strafeRight(4)
+                        .forward(28)
+                        .strafeLeft(3)
                         //place pixel
                         .back(10)
-                        .strafeRight(10)
+                        .strafeRight(22)
+                        .forward(24)
                         .splineToLinearHeading(new Pose2d(-10, -30, Math.toRadians(-90)), Math.toRadians(90))
                         .back(5)
                         .splineToConstantHeading(new Vector2d(-35, 38), Math.toRadians(-180))
-                        .back(12)
+                        .back(17)
                         //place pixel on canvas
                         .build()
                 );
@@ -284,9 +284,9 @@ public class MeepMeepTesting {
 //                .addEntity(BTR)
                 .addEntity(BBC2)
 //                .addEntity(BBL)
-                .addEntity(BBL2)
+//                .addEntity(BBL2)
 //                .addEntity(BBR)
-                .addEntity(BBR2)
+//                .addEntity(BBR2)
 //                .addEntity(RTC)
 //                .addEntity(RTL)
 //                .addEntity(RTR)
