@@ -117,6 +117,24 @@ public class MeepMeepTesting {
                 .build()
         );
 
+        RoadRunnerBotEntity RBL2 = new DefaultBotBuilder(meepMeep)
+                // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
+                .setConstraints(45, 90, Math.toRadians(180), Math.toRadians(180), 15)
+                .setDimensions(17.75, 17)
+                //right
+                .followTrajectorySequence(drive ->
+                        drive.trajectorySequenceBuilder(new Pose2d(60, -37, Math.toRadians(180)))
+                                .lineToSplineHeading(new Pose2d(20, -38, Math.toRadians(-90)))
+                                //place pixel
+                                .back(2)
+                                .strafeRight(20)
+                                .back(20)
+                                .splineToConstantHeading(new Vector2d(26, 38), Math.toRadians(0))
+                                .back(14)
+                                //place pixel on canvas
+                                .build()
+                );
+
         //Blue Top
         RoadRunnerBotEntity BTR = new DefaultBotBuilder(meepMeep)
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
@@ -282,14 +300,15 @@ public class MeepMeepTesting {
 //                .addEntity(BTR)
 //                .addEntity(BBC2)
 //                .addEntity(BBL)
-                .addEntity(BBL2)
+//                .addEntity(BBL2)
 //                .addEntity(BBR)
-//                .addEntity(BBR2)
+                .addEntity(BBR2)
 //                .addEntity(RTC)
 //                .addEntity(RTL)
 //                .addEntity(RTR)
 //                .addEntity(RBC)
 //                .addEntity(RBR)
+                .addEntity(RBL2)
                 .start();
     }
 }

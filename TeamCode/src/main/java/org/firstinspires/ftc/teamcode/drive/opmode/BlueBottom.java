@@ -165,13 +165,13 @@ public class BlueBottom extends LinearOpMode {
                 break;
             case 'r': //right
                 TrajectorySequence toSpikeRight = drive.trajectorySequenceBuilder(new Pose2d(-60, -37, Math.toRadians(0)))
-                        .lineToSplineHeading(new Pose2d(-25, -35, Math.toRadians(-90)))
+                        .lineToSplineHeading(new Pose2d(-20, -35, Math.toRadians(-90)))
                         .build();
                 drive.followTrajectorySequence(toSpikeRight);
                 //place pixel on spike mark
                 placeOnSpike();
                 TrajectorySequence toBackdropRight = drive.trajectorySequenceBuilder(toSpikeRight.end())
-                        .back(2)
+                        .back(3)
                         .strafeLeft(20)
                         .back(20)
                         .splineToConstantHeading(new Vector2d(-26, 38), Math.toRadians(-180))
