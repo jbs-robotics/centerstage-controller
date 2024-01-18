@@ -164,22 +164,23 @@ public class BlueBottom extends LinearOpMode {
 
                 break;
             case 'r': //right
+                telemetry.addLine("Detected BBR!");
                 TrajectorySequence toSpikeRight = drive.trajectorySequenceBuilder(new Pose2d(-60, -37, Math.toRadians(0)))
-                        .lineToSplineHeading(new Pose2d(-35, -37, Math.toRadians(-90)))
-                        .forward(13)
-                        .back(12)
+                        .lineToSplineHeading(new Pose2d(-25, -35, Math.toRadians(-90)))
                         .build();
 
                 drive.followTrajectorySequence(toSpikeRight);
                 //place pixel on spike mark
                 placeOnSpike();
                 TrajectorySequence toBackdropRight = drive.trajectorySequenceBuilder(toSpikeRight.end())
-                        .back(4)
-                        .strafeLeft(24)
+                        .back(2)
+                        .strafeLeft(20)
                         .back(20)
-                        .splineToConstantHeading(new Vector2d(-29, 38), Math.toRadians(-180))
-                        .back(12)
+                        .splineToConstantHeading(new Vector2d(-26, 38), Math.toRadians(-180))
+                        .back(14)
                         .build();
+                drive.followTrajectorySequence(toBackdropRight);
+
                 //place pixel on canvas
                 placeOnCanvas();
                 break;
