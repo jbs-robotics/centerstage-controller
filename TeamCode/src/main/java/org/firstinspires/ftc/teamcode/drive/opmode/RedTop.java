@@ -120,7 +120,7 @@ public class RedTop extends LinearOpMode {
                 break;
             case 'c': //center
                 Trajectory center1 = drive.trajectoryBuilder(new Pose2d(60, 10, Math.toRadians(180)))
-                        .forward(38)
+                        .forward(39)
                         .build();
                 drive.followTrajectory(center1);
                 Trajectory center1_2 = drive.trajectoryBuilder(center1.end())

@@ -85,9 +85,9 @@ public class BlueBottom extends LinearOpMode {
         switch(TFODPrediction){
             case 'l': //left
                 TrajectorySequence toSpikeLeft = drive.trajectorySequenceBuilder(new Pose2d(-60, -37, Math.toRadians(0)))
-                        .lineToSplineHeading(new Pose2d(-35, -33, Math.toRadians(90)))
-                        .forward(13)
-                        .back(12)
+                        .splineToSplineHeading(new Pose2d(-34, -33, Math.toRadians(90)), Math.toRadians(90))
+                        .forward(1)
+//                        .back(12)
                         .build();
                 drive.followTrajectorySequence(toSpikeLeft);
 
@@ -96,9 +96,9 @@ public class BlueBottom extends LinearOpMode {
 
                 TrajectorySequence toBackdropLeft = drive.trajectorySequenceBuilder(toSpikeLeft.end())
                         .back(6)
-                        .lineToSplineHeading(new Pose2d(-10, -38, Math.toRadians(-90)))
+                        .lineToSplineHeading(new Pose2d(-3, -38, Math.toRadians(-90)))
                         .back(24)
-                        .splineToConstantHeading(new Vector2d(-43, 45), Math.toRadians(180))
+                        .splineToConstantHeading(new Vector2d(-41, 45), Math.toRadians(180))
                         .back(5)
                         .build();
                 drive.followTrajectorySequence(toBackdropLeft);
@@ -109,16 +109,11 @@ public class BlueBottom extends LinearOpMode {
                 break;
             case 'c': //center
                 Trajectory center1 = drive.trajectoryBuilder(new Pose2d(-60, -37, Math.toRadians(0)))
-                        .forward(38)
+                        .forward(28)
                         .build();
                 drive.followTrajectory(center1);
 
-                Trajectory center1_2 = drive.trajectoryBuilder(center1.end())
-                        .back(10)
-                        .build();
-                drive.followTrajectory(center1_2);
-
-                Trajectory center1_3 = drive.trajectoryBuilder(center1_2.end())
+                Trajectory center1_3 = drive.trajectoryBuilder(center1.end())
                         .strafeLeft(4)
                         .build();
                 drive.followTrajectory(center1_3);
@@ -156,10 +151,8 @@ public class BlueBottom extends LinearOpMode {
             case 'r': //right
                 TrajectorySequence toSpikeRight = drive.trajectorySequenceBuilder(new Pose2d(-60, -37, Math.toRadians(0)))
                         .lineToSplineHeading(new Pose2d(-25, -37, Math.toRadians(-90)))
-                        .forward(13)
-                        .back(12)
+                        .forward(1)
                         .build();
-
                 drive.followTrajectorySequence(toSpikeRight);
                 //place pixel on spike mark
                 placeOnSpike();
@@ -196,6 +189,6 @@ public class BlueBottom extends LinearOpMode {
     }
     private void placeOnSpike(){
         fingerer.setPosition(0);
-        sleep(2000);
+        sleep(500);
     }
 }
