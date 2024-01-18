@@ -111,26 +111,28 @@ public class RedBottom extends LinearOpMode {
                 placeOnCanvas();
                 break;
             case 'c': //center
-                Trajectory center1 = drive.trajectoryBuilder(drive.getPoseEstimate())
-                        .forward(27)
+                TrajectorySequence toSpikeCenter = drive.trajectorySequenceBuilder(new Pose2d(60, -37, Math.toRadians(180)))
+                        .forward(28)
+                        .strafeRight(3)
                         .build();
-                drive.followTrajectory(center1);
+                drive.followTrajectorySequence(toSpikeCenter);
 
                 //place pixel on spike mark
                 placeOnSpike();
-                Trajectory center2 = drive.trajectoryBuilder(center1.end())
-                        .splineToConstantHeading(new Vector2d(35, -37), Math.toRadians(0))
-                        .splineToSplineHeading(new Pose2d(50, -37, Math.toRadians(90)), Math.toRadians(0))
-                        .splineToConstantHeading(new Vector2d(55, -12), Math.toRadians(180))
-                        .splineToConstantHeading(new Vector2d(35.5, 50), Math.toRadians(90))
+
+                TrajectorySequence toBackdropCenter = drive.trajectorySequenceBuilder(toSpikeCenter.end())
+                        .back(10)
+                        .strafeLeft(22)
+                        .forward(24)
+                        .splineToLinearHeading(new Pose2d(10, -30, Math.toRadians(-90)), Math.toRadians(90))
+                        .back(20)
+                        .splineToConstantHeading(new Vector2d(40, 38), Math.toRadians(0))
+                        .back(17)
                         .build();
-                drive.followTrajectory(center2);
-                drive.turn(Math.toRadians(180));
-                Trajectory center3 = drive.trajectoryBuilder(center2.end().plus(new Pose2d(0, 0, Math.toRadians(180))))
-                        .lineToConstantHeading(new Vector2d(35.5, 53))
-                        .build();
-                drive.followTrajectory(center3);
+                drive.followTrajectorySequence(toBackdropCenter);
+
                 //place pixel on canvas
+                placeOnCanvas();
                 break;
             case 'r': //right
                 Trajectory right1 = drive.trajectoryBuilder(drive.getPoseEstimate())

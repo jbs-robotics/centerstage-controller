@@ -108,57 +108,26 @@ public class BlueBottom extends LinearOpMode {
 
                 break;
             case 'c': //center
-                Trajectory center1 = drive.trajectoryBuilder(new Pose2d(-60, -37, Math.toRadians(0)))
+                TrajectorySequence toSpikeCenter = drive.trajectorySequenceBuilder(new Pose2d(-60, -37, Math.toRadians(0)))
                         .forward(28)
-                        .build();
-                drive.followTrajectory(center1);
-//                Trajectory center1_2 = drive.trajectoryBuilder(center1.end())
-//                        .back(10)
-//                        .build();
-//                drive.followTrajectory(center1_2);
-//                Trajectory center1_3 = drive.trajectoryBuilder(center1_2.end())
-                Trajectory center1_3 = drive.trajectoryBuilder(center1.end())
                         .strafeLeft(3)
                         .build();
-                drive.followTrajectory(center1_3);
+                drive.followTrajectorySequence(toSpikeCenter);
 
                 //place pixel on spike mark
                 placeOnSpike();
 
-                Trajectory center1_4 = drive.trajectoryBuilder(center1_3.end())
+                TrajectorySequence toBackdropCenter = drive.trajectorySequenceBuilder(toSpikeCenter.end())
                         .back(10)
-                        .build();
-                drive.followTrajectory(center1_4);
-
-                Trajectory center1_5 = drive.trajectoryBuilder(center1_4.end())
                         .strafeRight(22)
-                        .build();
-                drive.followTrajectory(center1_5);
-
-                Trajectory center1_6 = drive.trajectoryBuilder(center1_5.end())
                         .forward(24)
-                        .build();
-                drive.followTrajectory(center1_6);
-
-                Trajectory center2 = drive.trajectoryBuilder(center1_6.end())
                         .splineToLinearHeading(new Pose2d(-10, -30, Math.toRadians(-90)), Math.toRadians(90))
-                        .build();
-                drive.followTrajectory(center2);
-
-                Trajectory center2_1 = drive.trajectoryBuilder(center2.end())
-                        .back(5)
-                        .build();
-                drive.followTrajectory(center2_1);
-
-                Trajectory center2_2 = drive.trajectoryBuilder(center2_1.end())
+                        .back(20)
                         .splineToConstantHeading(new Vector2d(-40, 38), Math.toRadians(-180))
-                        .build();
-                drive.followTrajectory(center2_2);
-
-                Trajectory center3 = drive.trajectoryBuilder(center2_2.end())
                         .back(17)
                         .build();
-                drive.followTrajectory(center3);
+                drive.followTrajectorySequence(toBackdropCenter);
+
                 //place pixel on canvas
                 placeOnCanvas();
 

@@ -100,6 +100,26 @@ public class MeepMeepTesting {
                 //place pixel on canvas
                 .build()
         );
+
+        RoadRunnerBotEntity RBC2 = new DefaultBotBuilder(meepMeep)
+                .setConstraints(90, 90, Math.toRadians(180), Math.toRadians(180), 15)
+                .setDimensions(17.75, 17)
+                //center
+                .followTrajectorySequence(drive -> drive.trajectorySequenceBuilder(new Pose2d(60, -37, Math.toRadians(180)))
+                        .forward(28)
+                        .strafeRight(3)
+                        //place pixel
+                        .back(10)
+                        .strafeLeft(22)
+                        .forward(24)
+                        .splineToLinearHeading(new Pose2d(10, -30, Math.toRadians(-90)), Math.toRadians(90))
+                        .back(20)
+                        .splineToConstantHeading(new Vector2d(35, 38), Math.toRadians(0))
+                        .back(17)
+                        //place pixel on canvas
+                        .build()
+                );
+
         RoadRunnerBotEntity RBR = new DefaultBotBuilder(meepMeep)
         .setConstraints(90, 90, Math.toRadians(180), Math.toRadians(180), 15)
         .setDimensions(17.75, 17)
@@ -116,6 +136,8 @@ public class MeepMeepTesting {
                 //place pixel on canvas
                 .build()
         );
+
+
 
         RoadRunnerBotEntity RBL2 = new DefaultBotBuilder(meepMeep)
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
@@ -298,17 +320,18 @@ public class MeepMeepTesting {
 //                .addEntity(BTC)
 //                .addEntity(BTL)
 //                .addEntity(BTR)
-//                .addEntity(BBC2)
+                .addEntity(BBC2)
 //                .addEntity(BBL)
 //                .addEntity(BBL2)
 //                .addEntity(BBR)
-                .addEntity(BBR2)
+//                .addEntity(BBR2)
 //                .addEntity(RTC)
 //                .addEntity(RTL)
 //                .addEntity(RTR)
 //                .addEntity(RBC)
+                .addEntity(RBC2)
 //                .addEntity(RBR)
-                .addEntity(RBL2)
+//                .addEntity(RBL2)
                 .start();
     }
 }
