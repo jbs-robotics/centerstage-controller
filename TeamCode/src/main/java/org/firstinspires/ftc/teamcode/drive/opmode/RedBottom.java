@@ -135,25 +135,27 @@ public class RedBottom extends LinearOpMode {
                 placeOnCanvas();
                 break;
             case 'r': //right
-                Trajectory right1 = drive.trajectoryBuilder(drive.getPoseEstimate())
-                        .lineToSplineHeading(new Pose2d(35, -33, Math.toRadians(90)))
+                TrajectorySequence toSpikeRight = drive.trajectorySequenceBuilder(new Pose2d(60, -37, Math.toRadians(180)))
+                        .splineToSplineHeading(new Pose2d(35, -33, Math.toRadians(90)), Math.toRadians(90))
+                        .forward(13)
+                        .back(12)
                         .build();
-                Trajectory right2 = drive.trajectoryBuilder(right1.end())
-                        .splineToSplineHeading(new Pose2d(53, -37, Math.toRadians(90)), Math.toRadians(0))
-                        .splineToConstantHeading(new Vector2d(55, -12), Math.toRadians(0))
-                        .splineToConstantHeading(new Vector2d(48, -12), Math.toRadians(0))
-                        .splineToConstantHeading(new Vector2d(42, 50), Math.toRadians(90))
-                        .build();
-                drive.followTrajectory(right1);
+                drive.followTrajectorySequence(toSpikeRight);
                 //place pixel on spike mark
-                drive.followTrajectory(right2);
-                drive.turn(Math.toRadians(180));
-                Trajectory right3 = drive.trajectoryBuilder(right2.end().plus(new Pose2d(0, 0, Math.toRadians(180))))
-                        .lineToConstantHeading(new Vector2d(42, 53))
+                placeOnCanvas();
+
+                TrajectorySequence toBackdropRight = drive.trajectorySequenceBuilder(toSpikeRight.end())
+                        .back(6)
+                        .lineToSplineHeading(new Pose2d(9, -38, Math.toRadians(-90)))
+                        .back(60)
+                        .splineToConstantHeading(new Vector2d(39, 45), Math.toRadians(0))
+                        .back(6)
                         .build();
-                drive.followTrajectory(right3);
+                drive.followTrajectorySequence(toBackdropRight);
+
 
                 //place pixel on canvas
+                placeOnCanvas();
                 break;
             default:
                 telemetry.addData("wtf how", "no but actually how");
@@ -171,5 +173,8 @@ public class RedBottom extends LinearOpMode {
         angleServo.setPower(0);
         claw.setPosition(clawUp);
         sleep(1000);
+        angleServo.setPower(.2);
+        sleep(2000);
+        angleServo.setPower(0);
     }
 }

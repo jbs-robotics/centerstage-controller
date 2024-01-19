@@ -137,7 +137,23 @@ public class MeepMeepTesting {
                 .build()
         );
 
-
+        RoadRunnerBotEntity RBR2 = new DefaultBotBuilder(meepMeep)
+                .setConstraints(90, 90, Math.toRadians(180), Math.toRadians(180), 15)
+                .setDimensions(17.75, 17)
+                //left
+                .followTrajectorySequence(drive -> drive.trajectorySequenceBuilder(new Pose2d(60, -37, Math.toRadians(180)))
+                        .splineToSplineHeading(new Pose2d(35, -33, Math.toRadians(90)), Math.toRadians(90))
+                        .forward(13)
+                        .back(12)
+                        //place pixel
+                        .back(6)
+                        .lineToSplineHeading(new Pose2d(9, -38, Math.toRadians(-90)))
+                        .back(60)
+                        .splineToConstantHeading(new Vector2d(39, 45), Math.toRadians(0))
+                        .back(6)
+                        //place pixel on canvas
+                        .build()
+                );
 
         RoadRunnerBotEntity RBL2 = new DefaultBotBuilder(meepMeep)
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
@@ -320,7 +336,7 @@ public class MeepMeepTesting {
 //                .addEntity(BTC)
 //                .addEntity(BTL)
 //                .addEntity(BTR)
-                .addEntity(BBC2)
+//                .addEntity(BBC2)
 //                .addEntity(BBL)
 //                .addEntity(BBL2)
 //                .addEntity(BBR)
@@ -329,7 +345,7 @@ public class MeepMeepTesting {
 //                .addEntity(RTL)
 //                .addEntity(RTR)
 //                .addEntity(RBC)
-                .addEntity(RBC2)
+                .addEntity(RBR2)
 //                .addEntity(RBR)
 //                .addEntity(RBL2)
                 .start();
