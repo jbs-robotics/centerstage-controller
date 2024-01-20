@@ -209,6 +209,7 @@ public class BasicOpMode extends LinearOpMode {
             telemetry.addData("pullupMotor Target Position: ", pullupMotor.getTargetPosition());
             telemetry.addData("LiftPower: ", lift.getPower());
             telemetry.addData("angleServoPos: ", angleServo.getPower());
+            telemetry.addData("clawPos", claw.getPosition());
             telemetry.addData("counter: ", counter);
             telemetry.addData("counter2: ", counter2);
             telemetry.update();

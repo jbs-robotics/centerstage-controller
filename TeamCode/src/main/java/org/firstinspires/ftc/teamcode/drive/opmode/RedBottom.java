@@ -135,25 +135,21 @@ public class RedBottom extends LinearOpMode {
                 placeOnCanvas();
                 break;
             case 'r': //right
-                TrajectorySequence toSpikeRight = drive.trajectorySequenceBuilder(new Pose2d(60, -37, Math.toRadians(180)))
-                        .splineToSplineHeading(new Pose2d(35, -33, Math.toRadians(90)), Math.toRadians(90))
-                        .forward(13)
-                        .back(12)
+                TrajectorySequence toSpikeRight = drive.trajectorySequenceBuilder(new Pose2d(60, -33, Math.toRadians(180)))
+                        .splineToSplineHeading(new Pose2d(33, -33, Math.toRadians(90)), Math.toRadians(90))
+                        .forward(2)
                         .build();
                 drive.followTrajectorySequence(toSpikeRight);
                 //place pixel on spike mark
-                placeOnCanvas();
-
+                placeOnSpike();
                 TrajectorySequence toBackdropRight = drive.trajectorySequenceBuilder(toSpikeRight.end())
-                        .back(6)
-                        .lineToSplineHeading(new Pose2d(9, -38, Math.toRadians(-90)))
+                        .back(8)
+                        .lineToSplineHeading(new Pose2d(5, -38, Math.toRadians(-90)))
                         .back(60)
-                        .splineToConstantHeading(new Vector2d(39, 45), Math.toRadians(0))
+                        .splineToConstantHeading(new Vector2d(42, 46), Math.toRadians(0))
                         .back(6)
                         .build();
                 drive.followTrajectorySequence(toBackdropRight);
-
-
                 //place pixel on canvas
                 placeOnCanvas();
                 break;
@@ -165,7 +161,7 @@ public class RedBottom extends LinearOpMode {
     }
     private void placeOnSpike(){
         fingerer.setPosition(0);
-        sleep(500);
+        sleep(1000);
     }
     private void placeOnCanvas(){
         angleServo.setPower(-.2);
