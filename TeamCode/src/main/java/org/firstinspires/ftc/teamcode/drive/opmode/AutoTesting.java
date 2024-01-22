@@ -5,8 +5,10 @@ import android.content.res.AssetFileDescriptor;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -22,6 +24,7 @@ import java.nio.channels.FileChannel;
 public class AutoTesting extends LinearOpMode {
     private DcMotor lift = null;
     private Servo fingerer = null;
+    private DistanceSensor deistanceSensor = null;
     private OpenCvCamera webcam = null;
     private ColorDetectorPipeline pipeline = null;
     private int liftDelay = 1500;
@@ -46,6 +49,7 @@ public class AutoTesting extends LinearOpMode {
     }
     @Override
     public void runOpMode() {
+        deistanceSensor = hardwareMap.get(DistanceSensor.class, "distanceSensor");
         fingerer = hardwareMap.get(Servo.class, "fingerer2");
         int cameraMonitorViewId = hardwareMap.appContext.getResources()
                 .getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
@@ -70,25 +74,6 @@ public class AutoTesting extends LinearOpMode {
         telemetry.addData("region1Average", pipeline.getRegion1Average()[0]);
         telemetry.addData("region2Average", pipeline.getRegion2Average()[0]);
         waitForStart();
-//        try {
-//            tflite = loadModel("blue.tflite");
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        tflite.run(webcam.getFrameBitmap(Continuation.create(Thread.currentThread(), new ContinuationResultConsumer<Bitmap>() {
-//            @Override
-//            public void accept(Bitmap bitmap) {
-//                Mat tmp = new Mat();
-//                Imgproc.resize(input, tmp, new Size(224, 224));
-//                Bitmap bm = Bitmap.createBitmap(tmp.cols(), tmp.rows(), Bitmap.Config.ARGB_8888);
-//
-//                tflite.run(bm, output);
-//                return input;
-//            }
-//        })), output);
-
-//        Telemetry telemetry = new Telemetry();
-//        telemetry.addData("Inference Result", "Class: " +);
         telemetry.update();
         while(opModeIsActive()) {
 //            telemetry.addData("Status", "Running");
@@ -108,7 +93,8 @@ public class AutoTesting extends LinearOpMode {
 //            telemetry.addData("percentRed2", pipeline.getPercentRed2());
 //            telemetry.addData("percentBlue1", pipeline.getPercentBlue1());
 //            telemetry.addData("percentBlue2", pipeline.getPercentBlue2());
-//            telemetry.addData("Prediction", pipeline.getAnalysis());
+            telemetry.addData("Prediction", pipeline.getAnalysis());
+            telemetry.addData("distance: ", deistanceSensor.getDistance(DistanceUnit.INCH));
             telemetry.addData("fingererPos: ", fingerer.getPosition());
             telemetry.update();
             fingerer.setPosition(0);

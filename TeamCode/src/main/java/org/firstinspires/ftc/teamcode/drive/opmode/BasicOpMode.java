@@ -169,8 +169,6 @@ public class BasicOpMode extends LinearOpMode {
             currentServoPos = Math.max(0, currentServoPos);
             currentServoPos = Math.min(.75, currentServoPos);
             intakeServo.setPosition(currentServoPos);
-//            if (lockOn) urchin.setPower(-1);sleep(1000);urchin.setPower(0);
-//            if (lockOff) urchin.setPower(1);sleep(1000);urchin.setPower(0);
             if (sniperModeOff) sensitivity = 1;
             if (sniperModeOn) sensitivity = 0.5;
             if (driveSnipeOn) driveSensitivity = 0.25;

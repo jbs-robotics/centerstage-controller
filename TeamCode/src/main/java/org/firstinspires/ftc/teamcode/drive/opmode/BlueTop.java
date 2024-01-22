@@ -8,9 +8,11 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.opencv.core.Point;
 import org.openftc.easyopencv.OpenCvCamera;
@@ -22,8 +24,9 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
  */
 @Autonomous(group = "drive", name="Blue Top", preselectTeleOp="Basic: Linear OpMode")
 public class BlueTop extends LinearOpMode {
-    private DcMotor lift = null;
+    private DcMotor leftFront, leftBack, rightFront, rightBack, lift;
     private int liftDelay = 1000;
+    private DistanceSensor distanceSensor = null;
 
     private OpenCvCamera webcam = null;
     private ColorDetectorPipeline pipeline = null;
@@ -32,6 +35,19 @@ public class BlueTop extends LinearOpMode {
     private double intakeUp = 0.7, intakeDown = 0, clawUp = 0.5, clawDown = 0.4, angleServoUp = .1, angleServoDown = 0.43;
     @Override
     public void runOpMode() throws InterruptedException {
+        distanceSensor = hardwareMap.get(DistanceSensor.class, "distanceSensor");
+
+        // Movement Motors
+        leftFront = hardwareMap.get(DcMotor.class, "leftFront");
+        rightFront = hardwareMap.get(DcMotor.class, "rightFront");
+        leftBack = hardwareMap.get(DcMotor.class, "leftBack");
+        rightBack = hardwareMap.get(DcMotor.class, "rightBack");
+
+        // Set Motor Direction
+        leftFront.setDirection(DcMotor.Direction.REVERSE);
+        rightFront.setDirection(DcMotor.Direction.FORWARD);
+        leftBack.setDirection(DcMotor.Direction.REVERSE);
+        rightBack.setDirection(DcMotor.Direction.FORWARD);
 
         int cameraMonitorViewId = hardwareMap.appContext.getResources()
                 .getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
@@ -101,14 +117,14 @@ public class BlueTop extends LinearOpMode {
                         .build();
                 drive.followTrajectory(right1_4);
                 Trajectory right2 = drive.trajectoryBuilder(right1_4.end())
-                        .lineToLinearHeading(new Pose2d(new Vector2d(-24, 45), Math.toRadians(90)))
+                        .lineToLinearHeading(new Pose2d(new Vector2d(-26, 45), Math.toRadians(-90)))
                         .build();
                 drive.followTrajectory(right2);
-                Trajectory right3 = drive.trajectoryBuilder(right2.end().plus(new Pose2d(0, 0, Math.toRadians(180))))
-                        .lineToConstantHeading(new Vector2d(-26, 54))
-                        .build();
-                drive.turn(Math.toRadians(180));
-                drive.followTrajectory(right3);
+//                Trajectory right3 = drive.trajectoryBuilder(right2.end().plus(new Pose2d(0, 0, Math.toRadians(180))))
+//                        .lineToConstantHeading(new Vector2d(-26, 45))
+//                        .build();
+//                drive.turn(Math.toRadians(180));
+//                drive.followTrajectory(right3);
                 //place pixel on canvas1
                 placeOnCanvas();
                 break;
@@ -131,15 +147,15 @@ public class BlueTop extends LinearOpMode {
                         .back(12)
                         .build();
                 Trajectory center2 = drive.trajectoryBuilder(center1_5.end())
-                        .lineToLinearHeading(new Pose2d(-35.5, 45, Math.toRadians(90)))
+                        .lineToLinearHeading(new Pose2d(-35.5, 45, Math.toRadians(-90)))
                         .build();
                 drive.followTrajectory(center1_5);
                 drive.followTrajectory(center2);
-                Trajectory center3 = drive.trajectoryBuilder(center2.end().plus(new Pose2d(0, 0, Math.toRadians(180))))
-                        .lineToConstantHeading(new Vector2d(-35.5, 54))
-                        .build();
-                drive.turn(Math.toRadians(180));
-                drive.followTrajectory(center3);
+//                Trajectory center3 = drive.trajectoryBuilder(center2.end().plus(new Pose2d(0, 0, Math.toRadians(180))))
+//                        .lineToConstantHeading(new Vector2d(-35.5, 45))
+//                        .build();
+//                drive.turn(Math.toRadians(180));
+//                drive.followTrajectory(center3);
                 //place pixel on canvas
                 placeOnCanvas();
                 break;
@@ -171,11 +187,11 @@ public class BlueTop extends LinearOpMode {
                         .lineToConstantHeading(new Vector2d(-42, 45))
                         .build();
                 drive.followTrajectory(left3);
-                Trajectory left4 = drive.trajectoryBuilder(left3.end())
-                        .lineToConstantHeading(new Vector2d(-42, 55))
-                        .build();
-//                drive.turn(Math.toRadians(180));
-                drive.followTrajectory(left4);
+//                Trajectory left4 = drive.trajectoryBuilder(left3.end())
+//                        .lineToConstantHeading(new Vector2d(-42, 45))
+//                        .build();
+////                drive.turn(Math.toRadians(180));
+//                drive.followTrajectory(left4);
                 //place pixel on canvas
                 placeOnCanvas();
                 break;
@@ -185,29 +201,22 @@ public class BlueTop extends LinearOpMode {
         }
     }
     private void placeOnSpike(){
-//        sleep(1000);
-//        lift.setPower(1);
-//        sleep(liftDelay/8);
-//        lift.setPower(.25);
-////        intake.setPosition(.5);
-////        sleep(1000);
-//        double intakePos = .7;
-//        for(int i = 0; i < 70; i++){
-//            intake.setPosition(intakePos);
-//            intakePos -= .01;
-//            sleep(100);
-//        }
-//
-//        intake.setPosition(0);
-////        intake.setPosition(intakeDown);
-////        sleep(4000);
-//        intake.setPosition(intakeUp);
         fingerer.setPosition(0.4);
         sleep(2000);
     }
     private void placeOnCanvas(){
+        while(distanceSensor.getDistance(DistanceUnit.INCH) > 1){
+            leftFront.setPower(-.1);
+            rightFront.setPower(-.1);
+            leftBack.setPower(-.1);
+            rightBack.setPower(-.1);
+        }
+        leftFront.setPower(0);
+        rightFront.setPower(0);
+        leftBack.setPower(0);
+        rightBack.setPower(0);
         angleServo.setPower(-.2);
-        sleep(2000);
+        sleep(2200);
         angleServo.setPower(0);
         sleep(1000);
         claw.setPosition(clawUp);
