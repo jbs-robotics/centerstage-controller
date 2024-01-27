@@ -68,7 +68,6 @@ public class RedBottom extends LinearOpMode {
             public void onOpened()
             {
                 webcam.startStreaming(320,240, OpenCvCameraRotation.UPRIGHT);
-
             }
             @Override
             public void onError(int errorCode) { telemetry.addData("Error", errorCode); }
@@ -137,10 +136,10 @@ public class RedBottom extends LinearOpMode {
                 TrajectorySequence toBackdropCenter = drive.trajectorySequenceBuilder(toSpikeCenter.end())
                         .back(10)
                         .strafeLeft(22)
-                        .forward(26)
+                        .forward(30)
                         .splineToLinearHeading(new Pose2d(8, -30, Math.toRadians(-90)), Math.toRadians(90))
                         .back(28)
-                        .splineToConstantHeading(new Vector2d(40, 38), Math.toRadians(0))
+                        .splineToConstantHeading(new Vector2d(38, 38), Math.toRadians(0))
 //                        .back(17)
                         .build();
                 drive.followTrajectorySequence(toBackdropCenter);

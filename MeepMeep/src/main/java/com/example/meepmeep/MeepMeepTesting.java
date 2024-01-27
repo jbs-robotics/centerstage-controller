@@ -103,7 +103,9 @@ public class MeepMeepTesting {
 
         RoadRunnerBotEntity RBC2 = new DefaultBotBuilder(meepMeep)
                 .setConstraints(90, 90, Math.toRadians(180), Math.toRadians(180), 15)
-                .setDimensions(17.75, 17)
+//                .setDimensions(17.75, 17)
+                .setDimensions(0, 0)
+
                 //center
                 .followTrajectorySequence(drive -> drive.trajectorySequenceBuilder(new Pose2d(60, -37, Math.toRadians(180)))
                         .forward(28)
@@ -123,7 +125,8 @@ public class MeepMeepTesting {
         RoadRunnerBotEntity RBR = new DefaultBotBuilder(meepMeep)
         .setConstraints(90, 90, Math.toRadians(180), Math.toRadians(180), 15)
         .setDimensions(17.75, 17)
-        //right
+
+                //right
         .followTrajectorySequence(drive -> drive.trajectorySequenceBuilder(new Pose2d(60, -37, Math.toRadians(180)))
                 .lineToSplineHeading(new Pose2d(35, -33, Math.toRadians(90)))
                 //place pixel
@@ -139,9 +142,10 @@ public class MeepMeepTesting {
 
         RoadRunnerBotEntity RBR2 = new DefaultBotBuilder(meepMeep)
                 .setConstraints(90, 90, Math.toRadians(180), Math.toRadians(180), 15)
-                .setDimensions(17.75, 17)
+//                .setDimensions(17.75, 17)
+                .setDimensions(0, 0)
                 //left
-                .followTrajectorySequence(drive -> drive.trajectorySequenceBuilder(new Pose2d(60, -33, Math.toRadians(180)))
+                .followTrajectorySequence(drive -> drive.trajectorySequenceBuilder(new Pose2d(60, -37, Math.toRadians(180)))
                         .splineToSplineHeading(new Pose2d(35, -35, Math.toRadians(90)), Math.toRadians(90))
                         .forward(5)
 //                        .back(12)
@@ -158,7 +162,9 @@ public class MeepMeepTesting {
         RoadRunnerBotEntity RBL2 = new DefaultBotBuilder(meepMeep)
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
                 .setConstraints(45, 90, Math.toRadians(180), Math.toRadians(180), 15)
-                .setDimensions(17.75, 17)
+//                .setDimensions(17.75, 17)
+                .setDimensions(0, 0)
+
                 //right
                 .followTrajectorySequence(drive ->
                         drive.trajectorySequenceBuilder(new Pose2d(60, -37, Math.toRadians(180)))
@@ -341,13 +347,14 @@ public class MeepMeepTesting {
 //                .addEntity(BBL2)
 //                .addEntity(BBR)
 //                .addEntity(BBR2)
-                .addEntity(RTC)
-                .addEntity(RTL)
-                .addEntity(RTR)
+//                .addEntity(RTC)
+//                .addEntity(RTL)
+//                .addEntity(RTR)
 //                .addEntity(RBC)
-//                .addEntity(RBR2)
+                .addEntity(RBC2)
+                .addEntity(RBR2)
 //                .addEntity(RBR)
-//                .addEntity(RBL2)
+                .addEntity(RBL2)
                 .start();
     }
 }

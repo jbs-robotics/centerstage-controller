@@ -107,6 +107,10 @@ public class RedTop extends LinearOpMode {
                 drive.followTrajectorySequence(toBackdropLeft);
                 //place pixel on canvas
                 placeOnCanvas();
+                // Move to Corner
+                drive.followTrajectory(drive.trajectoryBuilder(toBackdropLeft.end())
+                        .strafeLeft(40)
+                        .build());
                 break;
             case 'c': //center
                 TrajectorySequence toSpikeCenter = drive.trajectorySequenceBuilder(new Pose2d(60, 10, Math.toRadians(180)))
@@ -123,6 +127,10 @@ public class RedTop extends LinearOpMode {
                 drive.followTrajectorySequence(toBackdropCenter);
                 //place pixel on canvas
                 placeOnCanvas();
+                // Move to Corner
+                drive.followTrajectory(drive.trajectoryBuilder(toBackdropCenter.end())
+                        .strafeLeft(30)
+                        .build());
                 break;
             case 'r': //right
                 TrajectorySequence toSpikeRight = drive.trajectorySequenceBuilder(new Pose2d(60, 10, Math.toRadians(180)))
@@ -139,6 +147,10 @@ public class RedTop extends LinearOpMode {
                 drive.followTrajectorySequence(toBackdropRight);
                 //place pixel on canvas
                 placeOnCanvas();
+                // Move to Corner
+                drive.followTrajectory(drive.trajectoryBuilder(toBackdropRight.end())
+                        .strafeLeft(20)
+                        .build());
                 break;
             default:
                 telemetry.addData("wtf how", "no but actually how");

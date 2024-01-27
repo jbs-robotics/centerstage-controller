@@ -14,6 +14,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.opencv.core.Point;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
@@ -30,8 +31,8 @@ public class BlueTop extends LinearOpMode {
 
     private OpenCvCamera webcam = null;
     private ColorDetectorPipeline pipeline = null;
-    private Servo intake = null, claw = null, fingerer;
-    private CRServo angleServo = null;
+    private Servo intake = null, claw = null;
+    private CRServo angleServo = null,  fingerer;
     private double intakeUp = 0.7, intakeDown = 0, clawUp = 0.5, clawDown = 0.4, angleServoUp = .1, angleServoDown = 0.43;
     @Override
     public void runOpMode() throws InterruptedException {
@@ -82,7 +83,7 @@ public class BlueTop extends LinearOpMode {
         angleServo = hardwareMap.get(CRServo.class, "angleServo");
         claw = hardwareMap.get(Servo.class, "claw");
         lift = hardwareMap.get(DcMotor.class, "lift");
-        fingerer = hardwareMap.get(Servo.class, "fingerer2");
+        fingerer = hardwareMap.get(CRServo.class, "fingerer2");
         lift.setDirection(DcMotor.Direction.REVERSE);
         intake.setPosition(intakeUp);
         claw.setPosition(clawDown);
@@ -95,105 +96,66 @@ public class BlueTop extends LinearOpMode {
 
         switch(TFODPrediction) {
             case 'r': //right
-                Trajectory right1 = drive.trajectoryBuilder(drive.getPoseEstimate())
-                        .lineToLinearHeading(new Pose2d(new Vector2d(-26, 15), Math.toRadians(-90)))
+                TrajectorySequence toSpikeRight = drive.trajectorySequenceBuilder(new Pose2d(-60, 10, Math.toRadians(0)))
+                        .strafeLeft(5)
+                        .lineToLinearHeading(new Pose2d(new Vector2d(-30, 7), Math.toRadians(-90)))
                         .build();
-                drive.followTrajectory(right1);
-                Trajectory right1_2_1 = drive.trajectoryBuilder(right1.end())
-                        .strafeRight(8)
-                        .build();
-                Trajectory right1_2 = drive.trajectoryBuilder(right1_2_1.end())
-                        .forward(17)
-                        .build();
-                Trajectory right1_3 = drive.trajectoryBuilder(right1_2.end())
-                        .back(8)
-                        .build();
-                drive.followTrajectory(right1_2);
-                drive.followTrajectory(right1_3);
+                drive.followTrajectorySequence(toSpikeRight);
                 //place prop on spike mark
                 placeOnSpike();
-                Trajectory right1_4 = drive.trajectoryBuilder(right1_3.end())
-                        .back(10)
+                TrajectorySequence toBackdropRight = drive.trajectorySequenceBuilder(toSpikeRight.end())
+                        .back(5)
+                        .lineToSplineHeading(new Pose2d(-22, 45, Math.toRadians(-90)))
                         .build();
-                drive.followTrajectory(right1_4);
-                Trajectory right2 = drive.trajectoryBuilder(right1_4.end())
-                        .lineToLinearHeading(new Pose2d(new Vector2d(-26, 45), Math.toRadians(-90)))
-                        .build();
-                drive.followTrajectory(right2);
-//                Trajectory right3 = drive.trajectoryBuilder(right2.end().plus(new Pose2d(0, 0, Math.toRadians(180))))
-//                        .lineToConstantHeading(new Vector2d(-26, 45))
-//                        .build();
-//                drive.turn(Math.toRadians(180));
-//                drive.followTrajectory(right3);
+                drive.followTrajectorySequence(toBackdropRight);
                 //place pixel on canvas1
                 placeOnCanvas();
+                // Move to corner
+                drive.followTrajectory(drive.trajectoryBuilder(toBackdropRight.end())
+                        .strafeLeft(40)
+                        .build());
+
                 break;
             case 'c': //center
-                Trajectory center1 = drive.trajectoryBuilder(drive.getPoseEstimate())
-                        .forward(38)
+                TrajectorySequence toSpikeCenter = drive.trajectorySequenceBuilder(new Pose2d(-60, 10, Math.toRadians((0))))
+                        .forward(29)
+                        .strafeRight(3)
                         .build();
-                drive.followTrajectory(center1);
-                Trajectory center1_2 = drive.trajectoryBuilder(center1.end())
-                        .back(10)
-                        .build();
-                Trajectory center1_3 = drive.trajectoryBuilder(center1_2.end())
-                        .strafeRight(4)
-                        .build();
-                drive.followTrajectory(center1_2);
-                drive.followTrajectory(center1_3);
                 //place prop on spike mark
+                drive.followTrajectorySequence(toSpikeCenter);
                 placeOnSpike();
-                Trajectory center1_5 = drive.trajectoryBuilder(center1_3.end())
-                        .back(12)
+                TrajectorySequence toBackdropCenter = drive.trajectorySequenceBuilder(toSpikeCenter.end())
+                        .back(5)
+                        .lineToSplineHeading(new Pose2d(-33, 45, Math.toRadians(-90)))
                         .build();
-                Trajectory center2 = drive.trajectoryBuilder(center1_5.end())
-                        .lineToLinearHeading(new Pose2d(-35.5, 45, Math.toRadians(-90)))
-                        .build();
-                drive.followTrajectory(center1_5);
-                drive.followTrajectory(center2);
-//                Trajectory center3 = drive.trajectoryBuilder(center2.end().plus(new Pose2d(0, 0, Math.toRadians(180))))
-//                        .lineToConstantHeading(new Vector2d(-35.5, 45))
-//                        .build();
-//                drive.turn(Math.toRadians(180));
-//                drive.followTrajectory(center3);
+                drive.followTrajectorySequence(toBackdropCenter);
                 //place pixel on canvas
                 placeOnCanvas();
+                // Move to Corner
+                drive.followTrajectory(drive.trajectoryBuilder(toBackdropCenter.end())
+                        .strafeLeft(30)
+                        .build());
                 break;
             case 'l': //left
                 //TODO: Update the robot
-                Trajectory left1 = drive.trajectoryBuilder(drive.getPoseEstimate())
-                        .strafeLeft(27)
+                TrajectorySequence toSpikeLeft = drive.trajectorySequenceBuilder(new Pose2d(-60, 10, Math.toRadians(0)))
+                        .strafeLeft(25)
+                        .lineToLinearHeading(new Pose2d(new Vector2d(-30, 33), Math.toRadians(-90)))
                         .build();
-                Trajectory left2 = drive.trajectoryBuilder(left1.end())
-                        .lineToSplineHeading(new Pose2d(-30, 39, Math.toRadians(-90)))
-                        .build();
-                drive.followTrajectory(left1);
-                drive.followTrajectory(left2);
-                Trajectory left2_1 = drive.trajectoryBuilder(left2.end())
-                        .forward(12)
-                        .build();
-                Trajectory left2_2 = drive.trajectoryBuilder(left2_1.end())
-                        .back(6)
-                        .build();
-                drive.followTrajectory(left2_1);
-                drive.followTrajectory(left2_2);
                 //place prop on spike mark
+                drive.followTrajectorySequence(toSpikeLeft);
                 placeOnSpike();
-                Trajectory left2_3 = drive.trajectoryBuilder(left2_2.end())
-                        .back(12)
+                TrajectorySequence toBackdropLeft = drive.trajectorySequenceBuilder(toSpikeLeft.end())
+                        .back(5)
+                        .lineToSplineHeading(new Pose2d(-42, 45, Math.toRadians(-90)))
                         .build();
-                drive.followTrajectory(left2_3);
-                Trajectory left3 = drive.trajectoryBuilder(left2_2.end())
-                        .lineToConstantHeading(new Vector2d(-42, 45))
-                        .build();
-                drive.followTrajectory(left3);
-//                Trajectory left4 = drive.trajectoryBuilder(left3.end())
-//                        .lineToConstantHeading(new Vector2d(-42, 45))
-//                        .build();
-////                drive.turn(Math.toRadians(180));
-//                drive.followTrajectory(left4);
+                drive.followTrajectorySequence(toBackdropLeft);
                 //place pixel on canvas
                 placeOnCanvas();
+                // Move to Corner
+                drive.followTrajectory(drive.trajectoryBuilder(toBackdropLeft.end())
+                        .strafeRight(20)
+                        .build());
                 break;
             default:
                 telemetry.addData("wtf how", "no but actually how");
@@ -201,8 +163,9 @@ public class BlueTop extends LinearOpMode {
         }
     }
     private void placeOnSpike(){
-        fingerer.setPosition(0.4);
+        fingerer.setPower(-.2);
         sleep(2000);
+        fingerer.setPower(0);
     }
     private void placeOnCanvas(){
         while(distanceSensor.getDistance(DistanceUnit.INCH) > 1){
