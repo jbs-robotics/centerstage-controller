@@ -112,7 +112,7 @@ public class BlueTop extends LinearOpMode {
                 placeOnCanvas();
                 // Move to corner
                 drive.followTrajectory(drive.trajectoryBuilder(toBackdropRight.end())
-                        .strafeLeft(40)
+                        .strafeRight(40)
                         .build());
 
                 break;
@@ -133,7 +133,7 @@ public class BlueTop extends LinearOpMode {
                 placeOnCanvas();
                 // Move to Corner
                 drive.followTrajectory(drive.trajectoryBuilder(toBackdropCenter.end())
-                        .strafeLeft(30)
+                        .strafeRight(30)
                         .build());
                 break;
             case 'l': //left

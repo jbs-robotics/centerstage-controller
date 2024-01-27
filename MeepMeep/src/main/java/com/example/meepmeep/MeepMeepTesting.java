@@ -103,8 +103,8 @@ public class MeepMeepTesting {
 
         RoadRunnerBotEntity RBC2 = new DefaultBotBuilder(meepMeep)
                 .setConstraints(90, 90, Math.toRadians(180), Math.toRadians(180), 15)
-//                .setDimensions(17.75, 17)
-                .setDimensions(0, 0)
+                .setDimensions(17.75, 17)
+//                .setDimensions(0, 0)
 
                 //center
                 .followTrajectorySequence(drive -> drive.trajectorySequenceBuilder(new Pose2d(60, -37, Math.toRadians(180)))
@@ -115,7 +115,7 @@ public class MeepMeepTesting {
                         .strafeLeft(22)
                         .forward(24)
                         .splineToLinearHeading(new Pose2d(10, -30, Math.toRadians(-90)), Math.toRadians(90))
-                        .back(20)
+                        .back(45)
                         .splineToConstantHeading(new Vector2d(35, 38), Math.toRadians(0))
                         .back(17)
                         //place pixel on canvas
@@ -142,8 +142,8 @@ public class MeepMeepTesting {
 
         RoadRunnerBotEntity RBR2 = new DefaultBotBuilder(meepMeep)
                 .setConstraints(90, 90, Math.toRadians(180), Math.toRadians(180), 15)
-//                .setDimensions(17.75, 17)
-                .setDimensions(0, 0)
+                .setDimensions(17.75, 17)
+//                .setDimensions(0, 0)
                 //left
                 .followTrajectorySequence(drive -> drive.trajectorySequenceBuilder(new Pose2d(60, -37, Math.toRadians(180)))
                         .splineToSplineHeading(new Pose2d(35, -35, Math.toRadians(90)), Math.toRadians(90))
@@ -162,8 +162,8 @@ public class MeepMeepTesting {
         RoadRunnerBotEntity RBL2 = new DefaultBotBuilder(meepMeep)
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
                 .setConstraints(45, 90, Math.toRadians(180), Math.toRadians(180), 15)
-//                .setDimensions(17.75, 17)
-                .setDimensions(0, 0)
+                .setDimensions(17.75, 17)
+//                .setDimensions(0, 0)
 
                 //right
                 .followTrajectorySequence(drive ->

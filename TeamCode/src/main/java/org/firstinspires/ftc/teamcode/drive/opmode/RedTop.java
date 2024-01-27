@@ -69,7 +69,7 @@ public class RedTop extends LinearOpMode {
             public void onError(int errorCode) { telemetry.addData("Error", errorCode); }
         });
         webcam.resumeViewport();
-        pipeline.setRegionPoints(new Point(0, 140), new Point(40, 180), pipeline.getRegion2_pointA(), pipeline.getRegion2_pointB());
+        pipeline.setRegionPoints(new Point(10, 140), new Point(50, 180), pipeline.getRegion2_pointA(), pipeline.getRegion2_pointB());
 
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         distanceSensor = hardwareMap.get(DistanceSensor.class, "distanceSensor");

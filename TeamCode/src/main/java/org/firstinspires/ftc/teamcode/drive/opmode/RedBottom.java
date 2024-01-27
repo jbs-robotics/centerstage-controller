@@ -33,8 +33,8 @@ public class RedBottom extends LinearOpMode {
 
     private OpenCvCamera webcam = null;
     private ColorDetectorPipeline pipeline = null;
-    private Servo intake, claw = null, fingerer;
-    private CRServo angleServo = null;
+    private Servo intake, claw = null;
+    private CRServo angleServo = null, fingerer;
 
     TfodProcessor tfod;
     private VisionPortal visionPortal;
@@ -89,7 +89,7 @@ public class RedBottom extends LinearOpMode {
         lift = hardwareMap.get(DcMotor.class, "lift");
         angleServo = hardwareMap.get(CRServo.class, "angleServo");
         claw = hardwareMap.get(Servo.class, "claw");
-        fingerer = hardwareMap.get(Servo.class, "fingerer2");
+        fingerer = hardwareMap.get(CRServo.class, "fingerer2");
         lift.setDirection(DcMotor.Direction.REVERSE);
         intake.setPosition(intakeUp);
         claw.setPosition(clawDown);
@@ -122,6 +122,10 @@ public class RedBottom extends LinearOpMode {
                 drive.followTrajectorySequence(toBackdropLeft);
                 //place pixel on canvas
                 placeOnCanvas();
+                // Move to Center
+                drive.followTrajectory(drive.trajectoryBuilder(toBackdropLeft.end())
+                        .strafeRight(20)
+                        .build());
                 break;
             case 'c': //center
                 TrajectorySequence toSpikeCenter = drive.trajectorySequenceBuilder(new Pose2d(60, -37, Math.toRadians(180)))
@@ -138,12 +142,15 @@ public class RedBottom extends LinearOpMode {
                         .strafeLeft(22)
                         .forward(30)
                         .splineToLinearHeading(new Pose2d(8, -30, Math.toRadians(-90)), Math.toRadians(90))
-                        .back(28)
+                        .back(45)
                         .splineToConstantHeading(new Vector2d(38, 38), Math.toRadians(0))
 //                        .back(17)
                         .build();
                 drive.followTrajectorySequence(toBackdropCenter);
-
+                // Move to Corner
+                drive.followTrajectory(drive.trajectoryBuilder(toBackdropCenter.end())
+                        .strafeRight(30)
+                        .build());
                 //place pixel on canvas
                 placeOnCanvas();
                 break;
@@ -165,6 +172,10 @@ public class RedBottom extends LinearOpMode {
                 drive.followTrajectorySequence(toBackdropRight);
                 //place pixel on canvas
                 placeOnCanvas();
+                // Move to corner
+                drive.followTrajectory(drive.trajectoryBuilder(toBackdropRight.end())
+                        .strafeRight(40)
+                        .build());
                 break;
             default:
                 telemetry.addData("wtf how", "no but actually how");
@@ -173,8 +184,9 @@ public class RedBottom extends LinearOpMode {
 
     }
     private void placeOnSpike(){
-        fingerer.setPosition(0);
-        sleep(1000);
+        fingerer.setPower(-.2);
+        sleep(2000);
+        fingerer.setPower(0);
     }
     private void placeOnCanvas(){
         while(distanceSensor.getDistance(DistanceUnit.INCH) > 1){

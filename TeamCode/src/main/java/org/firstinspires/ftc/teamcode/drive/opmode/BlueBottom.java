@@ -115,7 +115,10 @@ public class BlueBottom extends LinearOpMode {
 
                 //place pixel on canvas
                 placeOnCanvas();
-
+                // Move to Corner
+                drive.followTrajectory(drive.trajectoryBuilder(toBackdropLeft.end())
+                        .strafeLeft(40)
+                        .build());
                 break;
             case 'c': //center
                 TrajectorySequence toSpikeCenter = drive.trajectorySequenceBuilder(new Pose2d(-60, -37, Math.toRadians(0)))
@@ -130,8 +133,8 @@ public class BlueBottom extends LinearOpMode {
                 TrajectorySequence toBackdropCenter = drive.trajectorySequenceBuilder(toSpikeCenter.end())
                         .back(10)
                         .strafeRight(24)
-                        .forward(26)
-                        .splineToLinearHeading(new Pose2d(-8, -30, Math.toRadians(-90)), Math.toRadians(90))
+                        .forward(28)
+                        .splineToLinearHeading(new Pose2d(-6, -30, Math.toRadians(-90)), Math.toRadians(90))
                         .back(20)
                         .splineToConstantHeading(new Vector2d(-35, 38), Math.toRadians(-180))
 //                        .back(15)
@@ -140,7 +143,10 @@ public class BlueBottom extends LinearOpMode {
 
                 //place pixel on canvas
                 placeOnCanvas();
-
+                // Move to Corner
+                drive.followTrajectory(drive.trajectoryBuilder(toBackdropCenter.end())
+                        .strafeLeft(30)
+                        .build());
                 break;
             case 'r': //right
                 TrajectorySequence toSpikeRight = drive.trajectorySequenceBuilder(new Pose2d(-60, -37, Math.toRadians(0)))
@@ -159,6 +165,10 @@ public class BlueBottom extends LinearOpMode {
                 drive.followTrajectorySequence(toBackdropRight);
                 //place pixel on canvas
                 placeOnCanvas();
+                // Move to Corner
+                drive.followTrajectory(drive.trajectoryBuilder(toBackdropRight.end())
+                        .strafeLeft(20)
+                        .build());
                 break;
             default:
                 telemetry.addData("wtf how", "no but actually how");
